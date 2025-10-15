@@ -1,0 +1,364 @@
+i.mdi {
+    line-height: 1;
+}
+
+.h-100v {
+    height: 100vh;
+}
+
+sup {
+    top: 0;
+}
+
+.bg-gray {
+    background-color: var(--bs-body-bg);
+}
+
+.form-group {
+    margin-bottom: 8px;
+}
+
+.form-label {
+    margin-bottom: 5px;
+}
+
+.form-group.form-group-cols {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.form-group-cols .form-label {
+    width: 40%;
+}
+
+.form-group.d-flex label {
+    margin: 0;
+}
+
+.input-group span.select2.select2-container {
+    width: 80% !important;
+}
+
+input[switch=userban]:checked+label {
+    background-color: #f46a6a;
+}
+
+input[switch=userban]+label {
+    background-color: #34c38f;
+}
+
+input[switch=status]:checked+label {
+    background-color: #34c38f;
+}
+
+input[switch=status]+label {
+    background-color: #f46a6a;
+}
+
+
+/* Button Css */
+.btn {
+    line-height: 1;
+}
+
+.btn-soft-info {
+    color: #50a5f1;
+    background-color: rgb(80 165 241 / 30%);
+}
+
+.btn-soft-danger {
+    color: #f46a6a;
+    background-color: rgb(244 106 106 / 30%);
+}
+
+.btn-soft-success {
+    color: #34c38f;
+    background-color: rgb(52 195 143 / 30%);
+}
+
+.card {
+    -webkit-box-shadow: 0 0 13px 0 rgb(82 63 105 / 5%);
+    box-shadow: 0 0 13px 0 rgb(82 63 105 / 5%);
+    background-color: #fff;
+    margin-bottom: 20px;
+    border: 1px solid #ebedf2;
+}
+
+.card-header,
+.card-footer {
+    position: relative;
+    padding: 12px 25px;
+    border-bottom: 1px solid #ebedf2;
+    background-color: transparent;
+}
+
+.card .card-body {
+    padding: 20px 25px;
+    border-radius: 4px;
+    border-bottom: 1px solid #ebedf2;
+}
+
+.dropify-wrapper .dropify-message p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+.document-box {
+    position: relative;
+    margin-bottom: 15px;
+    ;
+}
+
+.document-box .remove-doc i {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #fff;
+    padding: 7px;
+    border-radius: 50px;
+    box-shadow: 0px 0px 3px 1px #ebebeb;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    z-index: 999;
+}
+
+.accordion-item {
+    color: var(--bs-body-color);
+}
+
+/* Header background matching Northern Railway brand */
+/* #page-topbar {
+    background: linear-gradient(135deg, #0B1E47, #1AB79D);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+} */
+
+/* Brand text next to logo */
+.navbar-brand-box .logo span,
+.navbar-brand-box a span {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+header .circular-logo {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #A3C6FF;
+    /* Optional: matches theme */
+    box-shadow: 0 0 10px rgba(163, 198, 255, 0.5);
+    /* Optional: subtle glow */
+}
+
+/* Icon buttons (fullscreen, hamburger, etc.) */
+.header-item {
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.header-item:hover {
+    color: #A3C6FF;
+    /* Light blue hover */
+}
+
+/* User profile picture border */
+.header-profile-user {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border: 2px solid #1AB79D;
+    /* Turquoise border */
+}
+
+/* User name */
+#page-header-user-dropdown span {
+    font-weight: 500;
+}
+
+/* Dropdown styling */
+.dropdown-menu {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+    color: #333;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background-color: #f2f2f2;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* Dashboard Card Backgrounds */
+.card-users {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+}
+
+.card-businesses {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    color: #fff;
+}
+
+.card-reviews {
+    background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
+    color: #fff;
+}
+
+.card-feedbacks {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+    color: #fff;
+}
+
+.card-complaints {
+    background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+    color: #fff;
+}
+
+.card-pending {
+    background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+    color: #fff;
+}
+
+.card-resolved {
+    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+    color: #fff;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    opacity: 0.9;
+}
+
+.card .card-body {
+    padding: 1.5rem;
+}
+
+/* Icon wrapper inside the card */
+.card-icon {
+    background-color: #fff;
+    color: inherit;
+    border-radius: 50%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 48px;
+    font-size: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect (optional) */
+.card:hover {
+    transform: translateY(-3px);
+    transition: all 0.3s ease;
+}
+
+/* ========== Header ========== */
+#page-topbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 0.5rem 1rem;
+}
+
+.navbar-header .header-item {
+    color: #333333;
+}
+
+.header-profile-user {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border: 2px solid #1AB79D;
+    border-radius: 50%;
+}
+
+/* ========== Improved Sidebar ========== */
+.sidebar-light {
+    background-color: #ffffff;
+    color: #212529;
+    border-right: 1px solid #dee2e6;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-light .menu-title {
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 13px;
+    padding: 15px 20px 5px;
+    font-weight: 600;
+}
+
+.sidebar-light .metismenu li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #343a40;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-light .metismenu li a i {
+    font-size: 18px;
+    color: #3f4246;
+    margin-right: 10px;
+    transition: color 0.3s;
+}
+
+/* Hover effect */
+.sidebar-light .metismenu li a:hover {
+    background-color: #417aac;
+    /* Light blue */
+    color: #1AB79D;
+}
+
+.sidebar-light .metismenu li a:hover i {
+    color: #1AB79D;
+    background-attachment: #417aac;
+}
+
+/* Active state */
+.sidebar-light .metismenu li a.active {
+    background-color: #1AB79D;
+    color: #3f4246;
+    font-weight: 600;
+}
+
+.sidebar-light .metismenu li a.active i {
+    color: #3f4246;
+}
+
+/* ========== Footer ========== */
+.custom-footer {
+    background-color: #f9f9f9;
+    border-top: 1px solid #e6e6e6;
+    color: #666666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.custom-footer a.footer-link {
+    color: #1AB79D;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.custom-footer a.footer-link:hover {
+    color: #117c6d;
+}
