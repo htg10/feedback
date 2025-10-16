@@ -7,6 +7,8 @@ use App\Models\Feedback;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Review;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class AdminController extends Controller
 {
@@ -71,6 +73,48 @@ class AdminController extends Controller
         $averageRating = $feedbacks->avg('rating');
 
         return view('admin.feedback.index', compact('feedbacks', 'averageRating'));
+    }
+
+    public function downloadDocuments($id)
+    {
+        $feedback = Feedback::findOrFail($id);
+
+        // Safely handle array or JSON string
+        $documents = is_array($feedback->document)
+            ? $feedback->document
+            : (json_decode($feedback->document, true) ?? []);
+
+        if (count($documents) === 0) {
+            return back()->with('error', 'No documents found.');
+        }
+
+        // Prepare safe filename details
+        $safeName = preg_replace('/[^A-Za-z0-9_-]/', '_', $feedback->name ?? 'feedback');
+        $date = $feedback->created_at->format('Y-m-d');
+
+        // Single image → direct download
+        if (count($documents) === 1) {
+            $path = $documents[0];
+            $fileName = "{$safeName}_{$date}." . pathinfo($path, PATHINFO_EXTENSION);
+            return response()->download(storage_path('app/public/' . str_replace('storage/', '', $path)), $fileName);
+        }
+
+        // Multiple images → ZIP file
+        $zipFileName = "{$safeName}_{$date}_documents.zip";
+        $zipPath = storage_path("app/public/{$zipFileName}");
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            foreach ($documents as $file) {
+                $filePath = storage_path('app/public/' . str_replace('storage/', '', $file));
+                if (file_exists($filePath)) {
+                    $zip->addFile($filePath, basename($filePath));
+                }
+            }
+            $zip->close();
+        }
+
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
     }
 
     public function complaints(Request $request)

@@ -90,10 +90,12 @@ Route::group(['middleware' => ['auth', 'role:1'], 'as' => 'admin.'], function ()
     // Feedback
     // Route::get('/admin/feedbacks', [AdminController::class, 'feedbacks'])->name('feedbacks');
     Route::get('/admin/feedbacks', [AdminController::class, 'feedbacks'])->name('feedbacks');
+    Route::get('/admin/feedbacks/{id}/download', [AdminController::class, 'downloadDocuments'])->name('feedbacks.download');
 
     // Complaint
     // Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('complaints');
     Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('complaints');
+    Route::get('/admin/complaints/{id}/download', [AdminController::class, 'downloadDocuments'])->name('complaints.download');
     Route::post('/admin/complaint/statusToggle/{id}', [AdminController::class, 'statusToggle'])->name('statusToggle');
 
 });
@@ -106,6 +108,7 @@ Route::group(['middleware' => ['auth', 'role:2'], 'as' => 'user.'], function () 
     // Complaint
     Route::get('/complaint/complaints', [UserController::class, 'complaints'])->name('complaints');
     Route::get('/complaint/history', [UserController::class, 'complaintHistory'])->name('history');
+    Route::get('/complaint/{id}/download', [AdminController::class, 'downloadDocuments'])->name('complaints.download');
     Route::post('/complaint/statusToggle/{id}', [UserController::class, 'statusToggle'])->name('statusToggle');
     Route::post('/complaint/statusToggle1/{id}', [UserController::class, 'statusToggle1'])->name('statusToggle1');
 

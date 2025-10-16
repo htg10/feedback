@@ -71,7 +71,7 @@
             <!-- Table -->
             <div class="card shadow-sm">
                 <div class="card-body table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
+                    <table id="feedbackTable" class="table table-bordered table-striped align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
@@ -80,6 +80,7 @@
                                 <th>Room</th>
                                 <th>Rating Average</th> <!-- now shows both % and label -->
                                 <th>Remark</th>
+                                <th>Image</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
@@ -116,11 +117,28 @@
                                         <strong class="text-muted">({{ $label }})</strong>
                                     </td>
                                     <td>{{ $feedback->comments ?? '-' }}</td>
+                                    <td>
+                                        @php
+                                            // Handle both array or JSON string
+                                            $docs = is_array($feedback->document)
+                                                ? $feedback->document
+                                                : json_decode($feedback->document, true) ?? [];
+                                        @endphp
+
+                                        @if (!empty($docs))
+                                            <a href="{{ route('admin.feedbacks.download', $feedback->id) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i> Download
+                                            </a>
+                                        @else
+                                            <span class="text-muted">No Image</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $feedback->created_at->format('d-m-Y H:i') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted">No feedback found.</td>
+                                    <td colspan="4" class="text-center text-muted">No feedback found.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -167,6 +185,11 @@
                     }
                 });
             }
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#feedbackTable').DataTable();
         });
     </script>
 @endsection
