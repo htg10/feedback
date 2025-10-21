@@ -57,6 +57,19 @@
                         </div>
 
                         <div class="col-md-2">
+                            <label class="form-label">Department</label>
+                            <select name="department_id" class="form-select">
+                                <option value="">-- All --</option>
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department->id }}"
+                                        {{ request('department_id') == $department->id ? 'selected' : '' }}>
+                                        {{ $department->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select">
                                 <option value="">-- All --</option>
@@ -98,7 +111,7 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $complaint->name }}</td>
                                     <td>{{ $complaint->mobile }}</td>
-                                    <td>{{ $complaint->rooms->name ?? '-' }}
+                                    <td><strong>Room: {{ $complaint->rooms->name ?? '-' }}</strong>
                                         [{{ $complaint->rooms->floors->name ?? '-' }}][{{ $complaint->rooms->buildings->name ?? '-' }}]
                                     </td>
                                     <td>{{ $complaint->user->departments->name ?? '-' }}</td>

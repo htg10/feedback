@@ -111,7 +111,7 @@
                                             }
                                         @endphp
 
-                                        <span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px;">
+                                        <span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px;" data-bs-toggle="modal" data-bs-target="#ratingModal">
                                             {{ number_format($rating, 2) }}%
                                         </span>
                                         <strong class="text-muted">({{ $label }})</strong>

@@ -7,6 +7,7 @@ use App\Models\Feedback;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Review;
+use App\Models\Department;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -68,7 +69,7 @@ class AdminController extends Controller
         $feedbacks = $query->with(['rooms.floors', 'rooms.buildings'])
             ->orderBy('created_at', 'desc')
             ->get();
-
+        dd($feedbacks);
         // Calculate average rating
         $averageRating = $feedbacks->avg('rating');
 
@@ -150,12 +151,22 @@ class AdminController extends Controller
             $query->where('status', $request->status);
         }
 
+        // ✅ Department filter (joins through user relationship)
+        if ($request->filled('department_id')) {
+            $query->whereHas('user.departments', function ($q) use ($request) {
+                $q->where('id', $request->department_id);
+            });
+        }
+
         // Load related models
         $complaints = $query->with(['rooms.floors', 'rooms.buildings', 'user.departments'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('admin.complaint.index', compact('complaints'));
+        // 🔥 Pass departments to the view
+        $departments = Department::all();
+
+        return view('admin.complaint.index', compact('complaints', 'departments'));
     }
 
     public function statusToggle(Request $request, $id)
