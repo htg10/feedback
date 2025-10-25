@@ -69,7 +69,7 @@ class AdminController extends Controller
         $feedbacks = $query->with(['rooms.floors', 'rooms.buildings'])
             ->orderBy('created_at', 'desc')
             ->get();
-        dd($feedbacks);
+        // dd($feedbacks);
         // Calculate average rating
         $averageRating = $feedbacks->avg('rating');
 

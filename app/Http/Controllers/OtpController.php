@@ -62,9 +62,10 @@ class OtpController extends Controller
         // Send SMS API
         $username = 'helptogether8';
         $password = '63278934';
-        $header = 'ASTAYS';
-        $templateId = '1207175758546570087';
-        $message = "Dear Guest, your OTP for Check-in is $otp. - Team Jyraj Clinic | Developed By Help Together Group";
+        $header = 'RLWORH';
+        $templateId = '1207176101245594177';
+        // $message = "Dear Guest, your OTP for Check-in is $otp. - Team Jyraj Clinic | Developed By Help Together Group";
+        $message = "Your OTP for the Rail ORH Portal is $otp. Please enter this code to validate your mobile number. Thank you, Developed By Help Together Group";
 
         $response = Http::asForm()->post('https://www.textguru.in/api/v22.0/', [
             'username' => $username,

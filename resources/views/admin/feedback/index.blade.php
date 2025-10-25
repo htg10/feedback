@@ -69,7 +69,7 @@
             @endif --}}
 
             <!-- Table -->
-            <div class="card shadow-sm">
+            {{-- <div class="card shadow-sm">
                 <div class="card-body table-responsive">
                     <table id="feedbackTable" class="table table-bordered table-striped align-middle">
                         <thead class="table-light">
@@ -95,6 +95,21 @@
                                         [{{ $feedback->rooms->floors->name ?? '-' }}]
                                         [{{ $feedback->rooms->buildings->name ?? '-' }}]
                                     </td>
+                                    @php
+                                        $ratingModel = [
+                                            'food_quality' => 10,
+                                            'hygiene_services' => 10,
+                                            'ambience' => 5,
+                                            'suit_condition' => 10,
+                                            'bathroom_utilities' => 10,
+                                            'housekeeping_service' => 10,
+                                            'surroundings_cleanliness' => 10,
+                                            'common_area_cleanliness' => 10,
+                                            'dustbin_condition' => 10,
+                                            'frequency_availability' => 5,
+                                            'responsiveness' => 10,
+                                        ];
+                                    @endphp
                                     <td>
                                         @php
                                             $rating = $feedback->rating;
@@ -111,11 +126,16 @@
                                             }
                                         @endphp
 
-                                        <span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px;" data-bs-toggle="modal" data-bs-target="#ratingModal">
+                                        <!-- Badge Trigger -->
+                                        <span class="badge {{ $badgeClass }}"
+                                            style="font-size: 14px; padding: 5px; cursor: pointer;" data-bs-toggle="modal"
+                                            data-bs-target="#ratingModal{{ $feedback->id }}">
                                             {{ number_format($rating, 2) }}%
                                         </span>
                                         <strong class="text-muted">({{ $label }})</strong>
+
                                     </td>
+
                                     <td>{{ $feedback->comments ?? '-' }}</td>
                                     <td>
                                         @php
@@ -136,6 +156,33 @@
                                     </td>
                                     <td>{{ $feedback->created_at->format('d-m-Y H:i') }}</td>
                                 </tr>
+
+                                <!-- Move modal OUTSIDE of table -->
+                                <div class="modal fade" id="ratingModal{{ $feedback->id }}" tabindex="-1"
+                                    aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Feedback Ratings ({{ $feedback->name }})</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ul class="list-group">
+                                                    @foreach ($ratingModel as $key => $max)
+                                                        <li
+                                                            class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span
+                                                                class="text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
+                                                            <span>{{ $feedback->$key ?? 'N/A' }} /
+                                                                {{ $max }}</span>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @empty
                                 <tr>
                                     <td colspan="4" class="text-center text-muted">No feedback found.</td>
@@ -144,7 +191,144 @@
                         </tbody>
                     </table>
                 </div>
+            </div> --}}
+            <div class="card shadow-sm">
+                <div class="card-body table-responsive">
+                    <table id="feedbackTable" class="table table-bordered table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Mobile No.</th>
+                                <th>Room</th>
+                                <th>Rating Average</th>
+                                <th>Remark</th>
+                                <th>Image</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $allModals = ''; @endphp
+
+                            @forelse ($feedbacks as $index => $feedback)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $feedback->name }}</td>
+                                    <td>{{ $feedback->mobile }}</td>
+                                    <td>
+                                        <strong>Room: {{ $feedback->rooms->name ?? '-' }}</strong>
+                                        [{{ $feedback->rooms->floors->name ?? '-' }}]
+                                        [{{ $feedback->rooms->buildings->name ?? '-' }}]
+                                    </td>
+
+                                    @php
+                                        $ratingModel = [
+                                            'food_quality' => 10,
+                                            'hygiene_services' => 10,
+                                            'ambience' => 5,
+                                            'suit_condition' => 10,
+                                            'bathroom_utilities' => 10,
+                                            'housekeeping_service' => 10,
+                                            'surroundings_cleanliness' => 10,
+                                            'common_area_cleanliness' => 10,
+                                            'dustbin_condition' => 10,
+                                            'frequency_availability' => 5,
+                                            'responsiveness' => 10,
+                                        ];
+
+                                        $rating = $feedback->rating;
+                                        $label = $feedback->rating_label ?? '-';
+
+                                        if ($rating >= 85) {
+                                            $badgeClass = 'bg-success';
+                                        } elseif ($rating >= 70) {
+                                            $badgeClass = 'bg-primary';
+                                        } elseif ($rating >= 50) {
+                                            $badgeClass = 'bg-warning text-dark';
+                                        } else {
+                                            $badgeClass = 'bg-danger';
+                                        }
+                                    @endphp
+
+                                    <td>
+                                        <span class="badge {{ $badgeClass }}"
+                                            style="font-size: 14px; padding: 5px; cursor: pointer;" data-bs-toggle="modal"
+                                            data-bs-target="#ratingModal{{ $feedback->id }}">
+                                            {{ number_format($rating, 2) }}%
+                                        </span>
+                                        <strong class="text-muted">({{ $label }})</strong>
+                                    </td>
+
+                                    <td>{{ $feedback->comments ?? '-' }}</td>
+                                    <td>
+                                        @php
+                                            $docs = is_array($feedback->document)
+                                                ? $feedback->document
+                                                : json_decode($feedback->document, true) ?? [];
+                                        @endphp
+
+                                        @if (!empty($docs))
+                                            <a href="{{ route('admin.feedbacks.download', $feedback->id) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i> Download
+                                            </a>
+                                        @else
+                                            <span class="text-muted">No Image</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $feedback->created_at->format('d-m-Y H:i') }}</td>
+                                </tr>
+
+                                {{-- Collect modals to render after table --}}
+                                @php
+                                    ob_start();
+                                @endphp
+                                <div class="modal fade" id="ratingModal{{ $feedback->id }}" tabindex="-1"
+                                    aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Feedback Ratings ({{ $feedback->name }})</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @php
+                                                    $feedbackData = is_array($feedback->feedback_data)
+                                                        ? $feedback->feedback_data
+                                                        : json_decode($feedback->feedback_data, true) ?? [];
+                                                @endphp
+                                                <ul class="list-group">
+                                                    @foreach ($ratingModel as $key => $max)
+                                                        <li
+                                                            class="list-group-item d-flex justify-content-between align-items-center">
+                                                            <span
+                                                                class="text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
+                                                            <span>{{ $feedbackData[$key] ?? 'N/A' }} /
+                                                                3</span>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @php
+                                    $allModals .= ob_get_clean();
+                                @endphp
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">No feedback found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            {{-- Render all modals outside the table --}}
+            {!! $allModals !!}
+
 
         </div>
     </div>

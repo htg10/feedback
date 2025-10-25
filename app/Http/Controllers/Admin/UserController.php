@@ -14,6 +14,7 @@ class UserController extends Controller
         $complaints = Feedback::where('type', 'complaint')
             ->where('complaint_type', Auth::id())
             ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('user.complaint.index', compact('complaints'));
@@ -24,6 +25,7 @@ class UserController extends Controller
         $complaints = Feedback::where('type', 'complaint')
             ->where('complaint_type', Auth::id())
             ->where('status', 'complete')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('user.complaint.history', compact('complaints'));

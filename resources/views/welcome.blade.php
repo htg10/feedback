@@ -15,8 +15,8 @@
 @endphp
 
 
-<span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px;"
-      data-bs-toggle="modal" data-bs-target="#ratingModal{{ $feedback->id }}">
+<span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px;" data-bs-toggle="modal"
+    data-bs-target="#ratingModal{{ $feedback->id }}">
     {{ number_format($rating, 2) }}%
 </span>
 <strong class="text-muted">({{ $label }})</strong>
@@ -28,7 +28,7 @@
 
 <!-- Rating Modal -->
 <div class="modal fade" id="ratingModal{{ $feedback->id }}" tabindex="-1"
-     aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
+    aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -50,4 +50,3 @@
         </div>
     </div>
 </div>
- 
