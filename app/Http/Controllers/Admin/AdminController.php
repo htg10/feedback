@@ -71,7 +71,8 @@ class AdminController extends Controller
             ->get();
         // dd($feedbacks);
         // Calculate average rating
-        $averageRating = $feedbacks->avg('rating');
+        // $averageRating = $feedbacks->avg('rating');
+        $averageRating = $feedbacks->count() > 0 ? $feedbacks->avg('rating') : 0;
 
         return view('admin.feedback.index', compact('feedbacks', 'averageRating'));
     }
