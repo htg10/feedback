@@ -76,6 +76,11 @@
                                 value="complaint">
                             <label class="form-check-label" for="complaintRadio">Complaint</label>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="trackRadio"
+                                value="track">
+                            <label class="form-check-label" for="trackRadio">Track Complaint</label>
+                        </div>
                     </div>
 
                     <!-- Feedback Form (hidden by default) -->
@@ -240,6 +245,34 @@
                         </form>
                     </div>
 
+                    <!-- Track Form (hidden by default) -->
+                    <div id="trackForm" class="d-none">
+                        <form method="POST" action="/track-complaint">
+                            @csrf
+                            <input type="hidden" name="mobile" value="{{ session('mobile') }}">
+
+                            <div class="mb-3">
+                                <label class="form-label">Enter Mobile or Complaint ID</label>
+                                <input type="text" name="track_input" class="form-control"
+                                    placeholder="Enter Mobile or Complaint ID" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-info w-100">Track Status</button>
+                        </form>
+                    </div>
+
+                </div>
+            @endif
+
+            @if (session('track_status'))
+                <div class="alert {{ session('track_alert_class') }} mt-3">
+                    {{ session('track_status') }}
+                </div>
+            @endif
+
+            @if (session('track_error'))
+                <div class="alert alert-danger mt-3">
+                    {{ session('track_error') }}
                 </div>
             @endif
 
@@ -269,7 +302,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             const feedbackRadio = document.getElementById('feedbackRadio');
             const complaintRadio = document.getElementById('complaintRadio');
@@ -291,6 +324,41 @@
                     }
                 });
             }
+        });
+    </script> --}}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const feedbackRadio = document.getElementById('feedbackRadio');
+            const complaintRadio = document.getElementById('complaintRadio');
+            const trackRadio = document.getElementById('trackRadio');
+
+            const feedbackForm = document.getElementById('feedbackForm');
+            const complaintForm = document.getElementById('complaintForm');
+            const trackForm = document.getElementById('trackForm');
+
+            function hideAll() {
+                feedbackForm.classList.add('d-none');
+                complaintForm.classList.add('d-none');
+                trackForm.classList.add('d-none');
+            }
+
+            feedbackRadio.addEventListener('change', function() {
+                hideAll();
+                feedbackForm.classList.remove('d-none');
+            });
+
+            complaintRadio.addEventListener('change', function() {
+                hideAll();
+                complaintForm.classList.remove('d-none');
+            });
+
+            trackRadio.addEventListener('change', function() {
+                hideAll();
+                trackForm.classList.remove('d-none');
+            });
+
         });
     </script>
 

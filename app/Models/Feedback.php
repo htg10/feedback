@@ -11,6 +11,7 @@ class Feedback extends Model
     use HasFactory;
 
     protected $fillable = [
+        'unique_id',
         'mobile',
         'otp',
         'is_verified',

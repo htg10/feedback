@@ -24,6 +24,7 @@ Route::get('/feedback/{slug}', [OtpController::class, 'showForm'])->name('otp.fo
 Route::post('/send-otp', [OTPController::class, 'sendOtp']);
 Route::post('/verify-otp', [OTPController::class, 'verifyOtp']);
 Route::post('/submit-feedback', [FeedbackController::class, 'submit']);
+Route::post('/track-complaint', [OtpController::class, 'trackComplaint'])->name('track.complaint');
 
 
 //LoginPage===========--------------===========>>>>

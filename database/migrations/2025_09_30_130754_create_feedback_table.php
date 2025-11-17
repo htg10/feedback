@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('feedback', function (Blueprint $table) {
             $table->id();
+            $table->string('unique_id');
             $table->string('mobile');
             $table->string('otp')->nullable();
             $table->boolean('is_verified')->default(false);

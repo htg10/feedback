@@ -94,7 +94,7 @@
                     <table class="table table-bordered table-striped align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>#</th>
+                                <th>Unique Id</th>
                                 <th>Name</th>
                                 <th>Mobile No.</th>
                                 <th>Room</th>
@@ -108,7 +108,7 @@
                         <tbody>
                             @forelse ($complaints as $index => $complaint)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $complaint->unique_id }}</td>
                                     <td>{{ $complaint->name }}</td>
                                     <td>{{ $complaint->mobile }}</td>
                                     <td><strong>Room: {{ $complaint->rooms->name ?? '-' }}</strong>

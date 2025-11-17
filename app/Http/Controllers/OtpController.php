@@ -36,6 +36,45 @@ class OtpController extends Controller
         return view('otp', compact('rooms', 'users', 'building'));
     }
 
+    public function trackComplaint(Request $request)
+    {
+        $request->validate([
+            'track_input' => 'required'
+        ]);
+
+        $input = $request->track_input;
+
+        // Check if input is Mobile
+        if (preg_match('/^[0-9]{10}$/', $input)) {
+            $complaint = Feedback::where('mobile', $input)
+                ->orderBy('id', 'DESC')
+                ->first();
+        } else {
+            // Treat as Complaint Unique ID
+            $complaint = Feedback::where('unique_id', $input)->first();
+        }
+
+        if (!$complaint) {
+            return back()->with('track_error', 'No complaint found!');
+        }
+
+        // Decide alert type based on status
+        $status = strtolower($complaint->status);
+        $alertClass = 'alert-info';
+
+        if ($status == 'pending') {
+            $alertClass = 'alert-danger';
+        } elseif ($status == 'complete' || $status == 'completed') {
+            $alertClass = 'alert-success';
+        }
+
+        // Pass status and alert class to session
+        return back()->with([
+            'track_status' => "Complaint Status: " . ucfirst($complaint->status),
+            'track_alert_class' => $alertClass
+        ]);
+    }
+
     public function sendOtp(Request $request)
     {
         $request->validate([

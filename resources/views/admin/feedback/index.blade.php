@@ -99,7 +99,7 @@
                     <table id="feedbackTable" class="table table-bordered table-striped align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>#</th>
+                                <th>Unique Id</th>
                                 <th>Name</th>
                                 <th>Mobile No.</th>
                                 <th>Room</th>
@@ -114,7 +114,7 @@
 
                             @forelse ($feedbacks as $index => $feedback)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $feedback->unique_id }}</td>
                                     <td>{{ $feedback->name }}</td>
                                     <td>{{ $feedback->mobile }}</td>
                                     <td>
@@ -219,9 +219,9 @@
                                     $allModals .= ob_get_clean();
                                 @endphp
                             @empty
-                                <tr>
+                                {{-- <tr>
                                     <td colspan="8" class="text-center text-muted">No feedback found.</td>
-                                </tr>
+                                </tr> --}}
                             @endforelse
                         </tbody>
                     </table>

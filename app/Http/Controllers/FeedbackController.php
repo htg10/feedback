@@ -5,62 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 
 class FeedbackController extends Controller
 {
-    // public function submit(Request $request)
-    // {
-    //     $request->validate([
-    //         'type' => 'required|in:feedback,complaint',
-    //         'mobile' => 'required|digits:10',
-    //         'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
-    //     ]);
-
-    //     $feedback = Feedback::where('mobile', $request->mobile)
-    //         ->where('is_verified', true)
-    //         ->latest()
-    //         ->firstOrFail();
-
-    //     if (!$feedback) {
-    //         return back()->with('error', 'No verified feedback entry found for this mobile number.');
-    //     }
-
-    //     if ($request->type === 'feedback') {
-    //         // Capture all feedback rating fields
-    //         $feedbackData = $request->input('feedback_data', []);
-
-    //         //calculate an average rating
-    //         $averageRating = collect($feedbackData)->avg();
-    //         // dd($request->all());
-    //         $feedback->update([
-    //             'type' => 'feedback',
-    //             'name' => $request->name,
-    //             'room' => $request->room,
-    //             'feedback_data' => $feedbackData,
-    //             'rating' => $averageRating,
-    //             'comments' => $request->comments,
-    //         ]);
-    //     } else {
-    //         $filePath = null;
-    //         if ($request->hasFile('document')) {
-    //             $file = $request->file('document');
-    //             $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-    //             $file->storeAs('documents', $fileName, 'public'); // save to storage/app/public/documents
-    //             $filePath = 'storage/documents/' . $fileName;
-    //         }
-
-    //         $feedback->update([
-    //             'type' => 'complaint',
-    //             'complaint_type' => $request->complaint_type,
-    //             'complaint_details' => $request->complaint_details,
-    //             'room' => $request->room,
-    //             'name' => $request->name,
-    //             'document_path' => $filePath,
-    //         ]);
-    //     }
-    //     return back()->with('success', 'Thank you! Your response has been submitted.');
-    // }
 
     public function submit(Request $request)
     {
@@ -97,7 +46,7 @@ class FeedbackController extends Controller
                 }
             }
         }
-
+        $uniqueId = 'RAIL-' . strtoupper(Str::random(5));
         // dd($documentPaths);
 
         if ($request->type === 'feedback') {
@@ -142,6 +91,7 @@ class FeedbackController extends Controller
             // $averageRating = collect($feedbackData)->avg();
 
             Feedback::create([
+                'unique_id' => $uniqueId,
                 'mobile' => $request->mobile,
                 'type' => 'feedback',
                 'name' => $request->name,
@@ -156,6 +106,7 @@ class FeedbackController extends Controller
 
         } else {
             Feedback::create([
+                'unique_id' => $uniqueId,
                 'mobile' => $request->mobile,
                 'type' => 'complaint',
                 'complaint_type' => $request->complaint_type,
