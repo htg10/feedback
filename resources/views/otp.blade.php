@@ -279,7 +279,7 @@
             <!-- ✅ Success / Error Messages (after form submit) -->
             @if (session('success'))
                 <div class="alert alert-success mt-3">
-                    {{ session('success') }}
+                    {!! session('success') !!}
                 </div>
             @endif
 

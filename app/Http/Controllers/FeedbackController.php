@@ -46,8 +46,8 @@ class FeedbackController extends Controller
                 }
             }
         }
-        $uniqueId = 'RAIL-' . strtoupper(Str::random(5));
-        // dd($documentPaths);
+        $uniqueId = 'RAIL-' . strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 5));
+        // dd($uniqueId);
 
         if ($request->type === 'feedback') {
 
@@ -120,7 +120,8 @@ class FeedbackController extends Controller
 
         // Clear OTP session after successful submission
         Session::forget(['otp', 'mobile', 'is_verified']);
+        $typeText = $request->has('complaint_type') ? 'Complaint' : 'Feedback';
 
-        return back()->with('success', 'Thank you! Your response has been submitted.');
+        return back()->with('success', "Thank you {$request->name}! Your {$typeText} has been successfully submitted. Reference ID: <strong>{$uniqueId}</strong>");
     }
 }
