@@ -36,10 +36,24 @@
                             </div>
                             <div class="card-body">
 
-                                <!-- Building Name -->
+                                <!-- Building -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Building <sup class="text-danger">*</sup></label>
+                                    <select name="building_id" class="form-select" required>
+                                        <option value="" selected>-- Select Building --</option>
+                                        @foreach ($buildings as $building)
+                                            <option value="{{ $building->id }}" @if ($department->building_id == $building->id) selected @endif>
+                                                {{ $building->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">Building is required.</div>
+                                </div>
+
                                 <div class="mb-3">
                                     <label for="department" class="form-label fw-semibold">
-                                        <i class="fas fa-tag me-1"></i> Department Name <sup class="text-danger fs-6">*</sup>
+                                        <i class="fas fa-tag me-1"></i> Department Name <sup
+                                            class="text-danger fs-6">*</sup>
                                     </label>
                                     <input type="text" id="department" name="name" class="form-control"
                                         placeholder="Enter Department name" value="{{ $department->name }}" required>

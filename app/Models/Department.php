@@ -11,5 +11,16 @@ class Department extends Model
 
     protected $fillable = [
         'name',
+        'building_id',
     ];
+
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'department_id');
+    }
 }

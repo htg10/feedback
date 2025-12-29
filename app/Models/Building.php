@@ -26,4 +26,9 @@ class Building extends Model
             $building->slug = \Str::slug($building->name);
         });
     }
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class);
+    }
 }

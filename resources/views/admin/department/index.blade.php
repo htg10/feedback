@@ -28,6 +28,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Department Name</th>
+                                <th>Building Name</th>
                                 <th>Created At</th>
                                 <th class="text-end">Actions</th>
                             </tr>
@@ -37,6 +38,7 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $department->name }}</td>
+                                    <td>{{ $department->building->name }}</td>
                                     <td>{{ $department->created_at->format('d M Y') }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('admin.department.edit', $department->id) }}"
@@ -92,21 +94,21 @@
         });
     </script> --}}
     <script>
-    $(document).ready(function () {
-        // Only apply DataTables if there's at least one data row
-        const rowCount = $('.table tbody tr').length;
-        const isEmpty = $('.table tbody tr td').first().attr('colspan') == 4;
+        $(document).ready(function() {
+            // Only apply DataTables if there's at least one data row
+            const rowCount = $('.table tbody tr').length;
+            const isEmpty = $('.table tbody tr td').first().attr('colspan') == 4;
 
-        if (rowCount > 0 && !isEmpty) {
-            $('.table').DataTable({
-                language: {
-                    paginate: {
-                        previous: "<i class='fas fa-angle-left'></i>",
-                        next: "<i class='fas fa-angle-right'></i>"
+            if (rowCount > 0 && !isEmpty) {
+                $('.table').DataTable({
+                    language: {
+                        paginate: {
+                            previous: "<i class='fas fa-angle-left'></i>",
+                            next: "<i class='fas fa-angle-right'></i>"
+                        }
                     }
-                }
-            });
-        }
-    });
-</script>
+                });
+            }
+        });
+    </script>
 @endsection

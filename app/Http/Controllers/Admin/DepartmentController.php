@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\Department;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,8 @@ class DepartmentController extends Controller
 
     public function create()
     {
-        return view('admin.department.create');
+        $buildings = Building::orderBy('name')->get();
+        return view('admin.department.create', compact('buildings'));
     }
 
     public function store(Request $request)
@@ -34,7 +36,8 @@ class DepartmentController extends Controller
     public function edit($id)
     {
         $department = Department::findOrFail($id);
-        return view('admin.department.edit', compact('department'));
+        $buildings = Building::all();
+        return view('admin.department.edit', compact('department', 'buildings'));
     }
 
     public function update(Request $request, $id)
@@ -43,11 +46,11 @@ class DepartmentController extends Controller
             //
         ]);
 
-        $building = Department::findOrFail($id);
+        $department = Department::findOrFail($id);
 
         $data = $request->all();
 
-        $building->update($data);
+        $department->update($data);
 
         return redirect('/admin/departments')->with('success', 'Department updated successfully.');
     }

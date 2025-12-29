@@ -17,6 +17,14 @@
                 @if (auth()->user()->role_id == 1)
                     <li class="menu-title text-muted">Admin Panel</li>
 
+                    <!-- Buildings -->
+                    <li class="mt-2">
+                        <a href="/admin/buildings" class="waves-effect d-flex align-items-center">
+                            <i class="bx bx-building-house me-2 fs-5"></i>
+                            <span>Buildings</span>
+                        </a>
+                    </li>
+
                     <!-- Departments -->
                     <li class="mt-2">
                         <a href="/admin/departments" class="waves-effect d-flex align-items-center">
@@ -33,13 +41,7 @@
                         </a>
                     </li>
 
-                    <!-- Buildings -->
-                    <li class="mt-2">
-                        <a href="/admin/buildings" class="waves-effect d-flex align-items-center">
-                            <i class="bx bx-building-house me-2 fs-5"></i>
-                            <span>Buildings</span>
-                        </a>
-                    </li>
+
 
                     <!-- Floors -->
                     <li class="mt-2">

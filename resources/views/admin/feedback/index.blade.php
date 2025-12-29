@@ -54,6 +54,19 @@
                             <input type="date" name="to_date" value="{{ request('to_date') }}" class="form-control">
                         </div>
 
+                        <div class="col-md-2">
+                            <label class="form-label">Building</label>
+                            <select name="building_id" class="form-select">
+                                <option value="">-- All --</option>
+                                @foreach ($buildings as $building)
+                                    <option value="{{ $building->id }}"
+                                        {{ request('building_id') == $building->id ? 'selected' : '' }}>
+                                        {{ $building->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="col-md-2 d-flex gap-2">
                             <button type="submit" class="btn btn-primary w-100">Filter</button>
                             <a href="{{ route('admin.feedbacks') }}" class="btn btn-secondary w-100">Reset</a>
@@ -61,39 +74,53 @@
                     </form>
                 </div>
             </div>
-            @if (!empty($feedbacks) && $feedbacks->count() > 0)
+            @if ($feedbacks->count() > 0)
                 @php
-                    $avg = number_format($averageRating, 2);
-                    $label = '-';
+                    $avg = $averageRating; // already rounded or null
+                    $label = 'N/A';
                     $badgeClass = 'bg-secondary';
 
-                    if ($avg >= 85) {
-                        $label = 'Excellent';
-                        $badgeClass = 'bg-success';
-                    } elseif ($avg >= 70) {
-                        $label = 'Good';
-                        $badgeClass = 'bg-primary';
-                    } elseif ($avg >= 50) {
-                        $label = 'Average';
-                        $badgeClass = 'bg-warning text-dark';
-                    } elseif ($avg > 0) {
-                        $label = 'Poor';
-                        $badgeClass = 'bg-danger';
+                    if ($avg !== null) {
+                        if ($avg >= 85) {
+                            $label = 'Excellent';
+                            $badgeClass = 'bg-success';
+                        } elseif ($avg >= 70) {
+                            $label = 'Good';
+                            $badgeClass = 'bg-primary';
+                        } elseif ($avg >= 50) {
+                            $label = 'Average';
+                            $badgeClass = 'bg-warning text-dark';
+                        } else {
+                            $label = 'Poor';
+                            $badgeClass = 'bg-danger';
+                        }
                     }
                 @endphp
 
                 <div class="alert-light border mb-4">
                     <strong>Overall Average Rating:</strong>
+
                     <span class="badge {{ $badgeClass }}" style="font-size:14px;">
-                        {{ $avg }}%
+                        {{ $avg !== null ? number_format($avg, 2) . '%' : 'N/A' }}
                     </span>
+
                     <span class="text-muted">({{ $label }})</span>
+
                     <small class="text-muted float-end">
                         {{ $feedbacks->count() }} records found
                     </small>
                 </div>
             @endif
 
+            <!-- Export Buttons -->
+            <div class="d-flex justify-content-end mb-3 gap-2">
+                <a href="{{ route('admin.feedbacks.export') }}" class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel"></i> Export Excel
+                </a>
+                <a href="{{ route('admin.feedbacks.export.pdf') }}" class="btn btn-danger">
+                    <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                </a>
+            </div>
             <div class="card shadow-sm">
                 <div class="card-body table-responsive">
                     <table id="feedbackTable" class="table table-bordered table-striped align-middle">
@@ -206,8 +233,10 @@
                                                             class="list-group-item d-flex justify-content-between align-items-center">
                                                             <span
                                                                 class="text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
-                                                            <span>{{ $feedbackData[$key] ?? 'N/A' }} /
-                                                                3</span>
+                                                            {{-- <span>{{ $feedbackData[$key] ?? 'N/A' }} /3</span> --}}
+                                                            {{ array_key_exists($key, $feedbackData) && $feedbackData[$key] !== null
+                                                                ? $feedbackData[$key] . ' / 3'
+                                                                : 'NULL' }}
                                                         </li>
                                                     @endforeach
                                                 </ul>

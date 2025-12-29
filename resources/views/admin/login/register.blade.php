@@ -160,6 +160,7 @@
                                         <option value="">-- Select Department --</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}
+                                                [{{ $department->building->name }}]
                                             </option>
                                         @endforeach
                                     </select>

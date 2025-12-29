@@ -46,14 +46,27 @@
                             </select>
                         </div> --}}
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">From Date</label>
                             <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">To Date</label>
                             <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Building</label>
+                            <select name="building_id" class="form-select">
+                                <option value="">-- All --</option>
+                                @foreach ($buildings as $building)
+                                    <option value="{{ $building->id }}"
+                                        {{ request('building_id') == $building->id ? 'selected' : '' }}>
+                                        {{ $building->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="col-md-2">
@@ -63,11 +76,12 @@
                                 @foreach ($departments as $department)
                                     <option value="{{ $department->id }}"
                                         {{ request('department_id') == $department->id ? 'selected' : '' }}>
-                                        {{ $department->name }}
+                                        {{ $department->name }} | {{ $department->building->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
+
 
                         <div class="col-md-2">
                             <label class="form-label">Status</label>

@@ -93,6 +93,14 @@ Route::group(['middleware' => ['auth', 'role:1'], 'as' => 'admin.'], function ()
     Route::get('/admin/feedbacks', [AdminController::class, 'feedbacks'])->name('feedbacks');
     Route::get('/admin/feedbacks/{id}/download', [AdminController::class, 'downloadDocuments'])->name('feedbacks.download');
 
+    //export excel
+    Route::get('admin/feedbacks/export', [AdminController::class, 'exportExcel'])
+        ->name('feedbacks.export');
+
+    //export pdf
+    Route::get('admin/feedbacks/export-pdf', [AdminController::class, 'exportPDF'])
+        ->name('feedbacks.export.pdf');
+
     // Complaint
     // Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('complaints');
     Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('complaints');

@@ -31,7 +31,12 @@ class OtpController extends Controller
         })->with(['floors', 'buildings'])->get();
 
         // Get all users with departments (if needed for your form)
-        $users = User::with('departments')->get();
+        // $users = User::with('departments')->get();
+        $users = User::whereHas('departments', function ($q) use ($building) {
+            $q->where('building_id', $building->id);
+        })
+            ->with('departments')
+            ->get();
 
         return view('otp', compact('rooms', 'users', 'building'));
     }
@@ -102,8 +107,9 @@ class OtpController extends Controller
         $username = 'helptogether8';
         $password = '63278934';
         $header = 'RLWORH';
-        $templateId = '1207176101245594177';
-        $message = "Your OTP for the Rail ORH Portal is $otp. Please enter this code to validate your mobile number. Thank you, Developed By Help Together Group";
+        $templateId = '1207176640107818871';
+        // $message = "Your OTP for the Rail ORH Portal is $otp. Please enter this code to validate your mobile number. Thank you , Developed By Help Together Group";
+        $message = "Your OTP for the Rail ORH Portal is $otp. Please enter this code to validate your mobile number. Thank you , Developed By Help Together Group";
 
         $response = Http::asForm()->post('https://www.textguru.in/api/v22.0/', [
             'username' => $username,
@@ -112,6 +118,11 @@ class OtpController extends Controller
             'dmobile' => '91' . $mobile,
             'dlttempid' => $templateId,
             'message' => $message,
+        ]);
+
+        \Log::info('OTP SMS Response', [
+            'mobile' => $mobile,
+            'response' => $response->body()
         ]);
 
         if ($response->successful()) {

@@ -223,13 +223,20 @@
                                 <label class="form-label">Complaint Type</label>
                                 <select name="complaint_type" class="form-select" required>
                                     <option value="">-- Select Complaint --</option>
-                                    @foreach ($users as $user)
+                                    {{-- @foreach ($users as $user)
                                         @if ($user->departments)
                                             <option value="{{ $user->id }}">
-                                                {{ $user->departments->name ?? null }}
+                                                {{ $user->departments->name ?? null }} ({{ $user->name }})
                                             </option>
                                         @endif
-                                    @endforeach
+                                    @endforeach --}}
+                                    @forelse ($users as $user)
+                                        <option value="{{ $user->id }}">
+                                            {{ $user->departments->name }}
+                                        </option>
+                                    @empty
+                                        <option disabled>No departments available for this building</option>
+                                    @endforelse
                                 </select>
                             </div>
 

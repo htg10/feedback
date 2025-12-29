@@ -162,7 +162,9 @@
                                     <select name="department_id" class="form-select" required>
                                         <option value="">-- Select Department --</option>
                                         @foreach ($departments as $department)
-                                            <option value="{{ $department->id }}" @if($user->department_id==$department->id) selected @endif>{{ $department->name }}
+                                            <option value="{{ $department->id }}"
+                                                @if ($user->department_id == $department->id) selected @endif>
+                                                {{ $department->name }} [{{ $department->building->name }}]
                                             </option>
                                         @endforeach
                                     </select>

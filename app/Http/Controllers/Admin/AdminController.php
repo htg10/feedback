@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -10,6 +11,9 @@ use App\Models\Review;
 use App\Models\Department;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
+use App\Exports\FeedbackExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
@@ -36,6 +40,19 @@ class AdminController extends Controller
         $review = User::find($id);
         $review->delete();
     }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new FeedbackExport, 'feedback-report.xlsx');
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $feedbacks = Feedback::where('type', 'feedback')->get();
+        $pdf = Pdf::loadView('pdf.feedback.pdf', compact('feedbacks'));
+        return $pdf->download('feedback-report.pdf');
+    }
+
 
     public function feedbacks(Request $request)
     {
@@ -65,16 +82,30 @@ class AdminController extends Controller
             ]);
         }
 
+        // ✅ BUILDING FILTER (NEW)
+        if ($request->filled('building_id')) {
+            $query->whereHas('rooms.buildings', function ($q) use ($request) {
+                $q->where('id', $request->building_id);
+            });
+        }
+
         // Load related data
         $feedbacks = $query->with(['rooms.floors', 'rooms.buildings'])
             ->orderBy('created_at', 'desc')
             ->get();
-        // dd($feedbacks);
-        // Calculate average rating
-        // $averageRating = $feedbacks->avg('rating');
-        $averageRating = $feedbacks->count() > 0 ? $feedbacks->avg('rating') : 0;
 
-        return view('admin.feedback.index', compact('feedbacks', 'averageRating'));
+        // $averageRating = $feedbacks->count() > 0 ? $feedbacks->avg('rating') : 0;
+        $averageRating = (clone $query)
+            ->whereNotNull('rating')
+            ->avg('rating');
+
+        $averageRating = $averageRating !== null
+            ? round($averageRating, 2)
+            : null;
+
+        $buildings = Building::orderBy('name')->get();
+
+        return view('admin.feedback.index', compact('feedbacks', 'averageRating', 'buildings'));
     }
 
     public function downloadDocuments($id)
@@ -159,15 +190,24 @@ class AdminController extends Controller
             });
         }
 
+        // ✅ BUILDING FILTER (NEW)
+        if ($request->filled('building_id')) {
+            $query->whereHas('rooms.buildings', function ($q) use ($request) {
+                $q->where('id', $request->building_id);
+            });
+        }
+
         // Load related models
         $complaints = $query->with(['rooms.floors', 'rooms.buildings', 'user.departments'])
             ->orderBy('created_at', 'desc')
             ->get();
 
         // 🔥 Pass departments to the view
-        $departments = Department::all();
+        // $departments = Department::all();
+        $departments = Department::orderBy('name')->get();
+        $buildings = Building::orderBy('name')->get();
 
-        return view('admin.complaint.index', compact('complaints', 'departments'));
+        return view('admin.complaint.index', compact('complaints', 'departments', 'buildings'));
     }
 
     public function statusToggle(Request $request, $id)
