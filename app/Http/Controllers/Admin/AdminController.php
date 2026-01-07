@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Feedback;
+use App\Services\FeedbackFilterService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Review;
@@ -12,6 +13,8 @@ use App\Models\Department;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 use App\Exports\FeedbackExport;
+use App\Exports\ComplaintsExport;
+use App\Services\ComplaintFilterService;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -43,14 +46,20 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        return Excel::download(new FeedbackExport, 'feedback-report.xlsx');
+        // return Excel::download(new FeedbackExport, 'feedback-report.xlsx');
+        $feedbacks = FeedbackFilterService::apply($request)->get();
+        return Excel::download(
+            new FeedbackExport($feedbacks),
+            'feedback-report-' . now()->format('d-m-Y') . '.xlsx'
+        );
     }
 
     public function exportPDF(Request $request)
     {
-        $feedbacks = Feedback::where('type', 'feedback')->get();
-        $pdf = Pdf::loadView('pdf.feedback.pdf', compact('feedbacks'));
-        return $pdf->download('feedback-report.pdf');
+        // $feedbacks = Feedback::where('type', 'feedback')->get();
+        $feedbacks = FeedbackFilterService::apply($request)->get();
+        $pdf = Pdf::loadView('pdf.feedback.pdf', compact('feedbacks'))->setPaper('A4', 'landscape');
+        return $pdf->download('feedback-report-' . now()->format('d-m-Y') . '.pdf');
     }
 
 
@@ -154,23 +163,19 @@ class AdminController extends Controller
     {
         $query = Feedback::where('type', 'complaint');
 
-        // Filter by month only
         if ($request->filled('month') && !$request->filled('year')) {
             $query->whereMonth('created_at', $request->month);
         }
 
-        // Filter by year only
         if ($request->filled('year') && !$request->filled('month')) {
             $query->whereYear('created_at', $request->year);
         }
 
-        // Filter by both month and year
         if ($request->filled('month') && $request->filled('year')) {
             $query->whereMonth('created_at', $request->month)
                 ->whereYear('created_at', $request->year);
         }
 
-        // Filter by custom date range
         if ($request->filled('from_date') && $request->filled('to_date')) {
             $query->whereBetween('created_at', [
                 $request->from_date . ' 00:00:00',
@@ -178,37 +183,52 @@ class AdminController extends Controller
             ]);
         }
 
-        // ✅ Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // ✅ Department filter (joins through user relationship)
         if ($request->filled('department_id')) {
             $query->whereHas('user.departments', function ($q) use ($request) {
                 $q->where('id', $request->department_id);
             });
         }
 
-        // ✅ BUILDING FILTER (NEW)
         if ($request->filled('building_id')) {
             $query->whereHas('rooms.buildings', function ($q) use ($request) {
                 $q->where('id', $request->building_id);
             });
         }
 
-        // Load related models
         $complaints = $query->with(['rooms.floors', 'rooms.buildings', 'user.departments'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // 🔥 Pass departments to the view
-        // $departments = Department::all();
         $departments = Department::orderBy('name')->get();
         $buildings = Building::orderBy('name')->get();
 
         return view('admin.complaint.index', compact('complaints', 'departments', 'buildings'));
     }
+
+    public function exportExcel1(Request $request)
+    {
+        $complaints = ComplaintFilterService::apply($request)->get();
+
+        return Excel::download(
+            new ComplaintsExport($complaints),
+            'complaints_' . now()->format('d-m-Y') . '.xlsx'
+        );
+    }
+
+    public function exportPdf1(Request $request)
+    {
+        $complaints = ComplaintFilterService::apply($request)->get();
+
+        $pdf = PDF::loadView('pdf.complaint.export-pdf', compact('complaints'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('complaints_' . now()->format('d-m-Y') . '.pdf');
+    }
+
 
     public function statusToggle(Request $request, $id)
     {

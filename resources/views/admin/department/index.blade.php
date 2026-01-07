@@ -38,7 +38,7 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $department->name }}</td>
-                                    <td>{{ $department->building->name }}</td>
+                                    <td>{{ $department->building->name ?? null}}</td>
                                     <td>{{ $department->created_at->format('d M Y') }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('admin.department.edit', $department->id) }}"

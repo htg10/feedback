@@ -232,7 +232,7 @@
                                     @endforeach --}}
                                     @forelse ($users as $user)
                                         <option value="{{ $user->id }}">
-                                            {{ $user->departments->name }}
+                                            {{ $user->name }}
                                         </option>
                                     @empty
                                         <option disabled>No departments available for this building</option>

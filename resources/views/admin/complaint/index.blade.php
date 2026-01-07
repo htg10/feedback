@@ -22,30 +22,6 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('admin.complaints') }}" class="row g-3 align-items-end">
 
-                        {{-- <div class="col-md-2">
-                            <label class="form-label">Month</label>
-                            <select name="month" class="form-select">
-                                <option value="">-- Select Month --</option>
-                                @foreach (range(1, 12) as $m)
-                                    <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                        {{ date('F', mktime(0, 0, 0, $m, 1)) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label class="form-label">Year</label>
-                            <select name="year" class="form-select">
-                                <option value="">-- Select Year --</option>
-                                @foreach (range(date('Y'), date('Y') - 5) as $y)
-                                    <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div> --}}
-
                         <div class="col-md-2">
                             <label class="form-label">From Date</label>
                             <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
@@ -76,7 +52,7 @@
                                 @foreach ($departments as $department)
                                     <option value="{{ $department->id }}"
                                         {{ request('department_id') == $department->id ? 'selected' : '' }}>
-                                        {{ $department->name }} | {{ $department->building->name }}
+                                        {{ $department->name }} | {{ $department->building->name ?? null }}
                                     </option>
                                 @endforeach
                             </select>
@@ -100,6 +76,17 @@
                         </div>
                     </form>
                 </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="d-flex justify-content-end mb-3 gap-2">
+                <a href="{{ route('admin.complaints.export.excel', request()->query()) }}" class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel"></i> Export Excel
+                </a>
+
+                <a href="{{ route('admin.complaints.export.pdf', request()->query()) }}" class="btn btn-danger">
+                    <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                </a>
             </div>
 
             <!-- Table -->

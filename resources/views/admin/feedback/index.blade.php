@@ -21,28 +21,6 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('admin.feedbacks') }}" class="row g-3 align-items-end">
 
-                        {{-- <div class="col-md-2">
-                            <label class="form-label">Month</label>
-                            <select name="month" class="form-select">
-                                <option value="">-- Select Month --</option>
-                                @foreach (range(1, 12) as $m)
-                                    <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                        {{ date('F', mktime(0, 0, 0, $m, 1)) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label class="form-label">Year</label>
-                            <select name="year" class="form-select">
-                                <option value="">-- Select Year --</option>
-                                @foreach (range(date('Y'), date('Y') - 5) as $y)
-                                    <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                        {{ $y }}</option>
-                                @endforeach
-                            </select>
-                        </div> --}}
 
                         <div class="col-md-3">
                             <label class="form-label">From Date</label>
@@ -114,10 +92,11 @@
 
             <!-- Export Buttons -->
             <div class="d-flex justify-content-end mb-3 gap-2">
-                <a href="{{ route('admin.feedbacks.export') }}" class="btn btn-success">
+                <a href="{{ route('admin.feedbacks.export', request()->query()) }}" class="btn btn-success">
                     <i class="bi bi-file-earmark-excel"></i> Export Excel
                 </a>
-                <a href="{{ route('admin.feedbacks.export.pdf') }}" class="btn btn-danger">
+
+                <a href="{{ route('admin.feedbacks.export.pdf', request()->query()) }}" class="btn btn-danger">
                     <i class="bi bi-file-earmark-pdf"></i> Export PDF
                 </a>
             </div>
