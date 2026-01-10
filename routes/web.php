@@ -128,7 +128,6 @@ Route::group(['middleware' => ['auth', 'role:2'], 'as' => 'user.'], function () 
     Route::post('/complaint/statusToggle/{id}', [UserController::class, 'statusToggle'])->name('statusToggle');
     Route::post('/complaint/statusToggle1/{id}', [UserController::class, 'statusToggle1'])->name('statusToggle1');
 
-
 });
 
 

@@ -61,7 +61,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <form method="POST" action="{{ route('user.statusToggle', $complaint->id) }}">
+                                        {{-- <form method="POST" action="{{ route('user.statusToggle', $complaint->id) }}">
                                             @csrf
                                             <select name="status" onchange="updateSelectStyle(this); this.form.submit()"
                                                 class="form-select {{ $complaint->status == 'pending' ? 'border border-danger text-danger' : '' }}
@@ -75,7 +75,8 @@
                                                     Complete
                                                 </option>
                                             </select>
-                                        </form>
+                                        </form> --}}
+                                        <input type="text" name="remark" placeholder="">
                                     </td>
                                     <td>{{ $complaint->created_at->format('d M Y') }}</td>
                                 </tr>
