@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Building;
 use App\Models\Department;
 use App\Models\Feedback;
+use App\Models\Mobile;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -86,6 +87,16 @@ class OtpController extends Controller
             'mobile' => 'required|digits:10'
         ]);
 
+        $mobile = $request->mobile;
+        //Check mobile exists in mobiles table
+        $exists = Mobile::where('mobile', $mobile)->exists();
+        if (!$exists) {
+            return back()->with(
+                'otp_sent_error',
+                'CUG number not registered. OTP not sent. Contact Reception for manual feedback.'
+            );
+        }
+
         // Generate random 6-digit OTP
         $otp = rand(100000, 999999);
         $mobile = $request->mobile;
@@ -94,14 +105,6 @@ class OtpController extends Controller
         Session::put('otp', $otp);
         Session::put('mobile', $mobile);
         Session::put('is_verified', false);
-
-        // Feedback::create(
-        //     [
-        //         'mobile' => $mobile,
-        //         'otp' => $otp,
-        //         'is_verified' => false,
-        //     ]
-        // );
 
         // Send SMS API
         $username = 'helptogether8';
