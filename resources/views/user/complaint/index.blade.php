@@ -27,9 +27,9 @@
                                 <th>Name</th>
                                 <th>Mobile No.</th>
                                 <th>Room</th>
-                                <th>Remark</th>
+                                <th>Comment</th>
                                 <th>Download</th>
-                                <th>Status</th>
+                                <th>Remark</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
@@ -61,7 +61,14 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <form method="POST" action="{{ route('user.statusToggle', $complaint->id) }}">
+
+                                        <form method="POST" action="{{ route('user.complaint.remark', $complaint->id) }}">
+                                            @csrf
+                                            <input type="text" name="user_remark" value="{{ $complaint->user_remark }}"
+                                                class="form-control form-control-sm" placeholder="Enter remark"
+                                                onchange="this.form.submit()">
+                                        </form>
+                                        {{-- <form method="POST" action="{{ route('user.statusToggle', $complaint->id) }}">
                                             @csrf
                                             <select name="status" onchange="updateSelectStyle(this); this.form.submit()"
                                                 class="form-select {{ $complaint->status == 'pending' ? 'border border-danger text-danger' : '' }}
@@ -75,7 +82,7 @@
                                                     Complete
                                                 </option>
                                             </select>
-                                        </form>
+                                        </form> --}}
                                     </td>
                                     <td>{{ $complaint->created_at->format('d M Y') }}</td>
                                 </tr>

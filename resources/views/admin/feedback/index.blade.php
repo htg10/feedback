@@ -110,7 +110,7 @@
                                 <th>Mobile No.</th>
                                 <th>Room</th>
                                 <th>Rating Average</th>
-                                <th>Remark</th>
+                                <th>Comment</th>
                                 <th>Image</th>
                                 <th>Created At</th>
                             </tr>

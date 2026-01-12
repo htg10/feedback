@@ -127,6 +127,7 @@ Route::group(['middleware' => ['auth', 'role:2'], 'as' => 'user.'], function () 
     Route::get('/complaint/{id}/download', [AdminController::class, 'downloadDocuments'])->name('complaints.download');
     Route::post('/complaint/statusToggle/{id}', [UserController::class, 'statusToggle'])->name('statusToggle');
     Route::post('/complaint/statusToggle1/{id}', [UserController::class, 'statusToggle1'])->name('statusToggle1');
+    Route::post('/complaint/remark/{id}', [UserController::class, 'updateUserRemark'])->name('complaint.remark');
 
 });
 

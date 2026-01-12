@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->string('room')->nullable();
             $table->text('document')->nullable();
             $table->enum('status', ['pending', 'complete'])->default('pending');
+            $table->string('user_remark')->nullable();
             $table->timestamps();
         });
     }

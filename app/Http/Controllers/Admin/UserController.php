@@ -13,7 +13,6 @@ class UserController extends Controller
     {
         $complaints = Feedback::where('type', 'complaint')
             ->where('complaint_type', Auth::id())
-            ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -41,6 +40,19 @@ class UserController extends Controller
         $complaint->update(['status' => $request->status]);
 
         return redirect('/complaint/complaints')->with('success', 'Complaint status updated successfully.');
+    }
+
+    public function updateUserRemark(Request $request, $id)
+    {
+        $request->validate([
+            'user_remark' => 'nullable|string|max:255',
+        ]);
+
+        $complaint = Feedback::findOrFail($id);
+        $complaint->user_remark = $request->user_remark;
+        $complaint->save();
+
+        return redirect()->back()->with('success', 'Remark updated successfully.');
     }
 
     public function statusToggle1(Request $request, $id)

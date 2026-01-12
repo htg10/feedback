@@ -26,6 +26,7 @@ class Feedback extends Model
         'complaint_details',
         'document',
         'status',
+        'user_remark',
     ];
 
     protected $casts = [

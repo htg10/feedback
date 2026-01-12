@@ -27,9 +27,9 @@
                                 <th>Name</th>
                                 <th>Mobile No.</th>
                                 <th>Room</th>
-                                <th>Remark</th>
+                                <th>Comment</th>
                                 <th>Download</th>
-                                <th>Status</th>
+                                <th>Remark</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
@@ -61,22 +61,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{-- <form method="POST" action="{{ route('user.statusToggle', $complaint->id) }}">
+                                        <form method="POST" action="{{ route('user.complaint.remark', $complaint->id) }}">
                                             @csrf
-                                            <select name="status" onchange="updateSelectStyle(this); this.form.submit()"
-                                                class="form-select {{ $complaint->status == 'pending' ? 'border border-danger text-danger' : '' }}
-                                                {{ $complaint->status == 'complete' ? 'border border-success text-success' : '' }}">
-                                                <option value="pending" class="text-danger"
-                                                    {{ $complaint->status == 'pending' ? 'selected' : '' }}>
-                                                    Pending
-                                                </option>
-                                                <option value="complete" class="text-success"
-                                                    {{ $complaint->status == 'complete' ? 'selected' : '' }}>
-                                                    Complete
-                                                </option>
-                                            </select>
-                                        </form> --}}
-                                        <input type="text" name="remark" placeholder="">
+                                            <input type="text" name="user_remark" value="{{ $complaint->user_remark }}"
+                                                class="form-control form-control-sm" placeholder="Enter remark"
+                                                onchange="this.form.submit()">
+                                        </form>
                                     </td>
                                     <td>{{ $complaint->created_at->format('d M Y') }}</td>
                                 </tr>

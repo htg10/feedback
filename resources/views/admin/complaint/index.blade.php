@@ -100,9 +100,10 @@
                                 <th>Mobile No.</th>
                                 <th>Room</th>
                                 <th>Department</th>
-                                <th>Remark</th>
+                                <th>Comment</th>
                                 <th>Download</th>
                                 <th>Status</th>
+                                <th>User Remark</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
@@ -151,6 +152,7 @@
                                             </select>
                                         </form>
                                     </td>
+                                    <td>{{ $complaint->user_remark }}</td>
                                     <td>{{ $complaint->created_at->format('d M Y') }}</td>
                                 </tr>
                             @empty
