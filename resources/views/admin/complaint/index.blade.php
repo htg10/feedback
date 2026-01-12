@@ -4,6 +4,12 @@
     <title>Complaints List | Admin</title>
 @endsection
 
+@section('style')
+    <style>
+
+    </style>
+@endsection
+
 @section('content')
     <div class="page-content">
         <div class="container-fluid">
@@ -103,7 +109,7 @@
                                 <th>Comment</th>
                                 <th>Download</th>
                                 <th>Status</th>
-                                <th>User Remark</th>
+                                <th>Remark</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
@@ -117,7 +123,22 @@
                                         [{{ $complaint->rooms->floors->name ?? '-' }}][{{ $complaint->rooms->buildings->name ?? '-' }}]
                                     </td>
                                     <td>{{ $complaint->user->departments->name ?? '-' }}</td>
-                                    <td>{{ $complaint->complaint_details }}</td>
+                                    <td>
+                                        <span class="comment-short">
+                                            {{ Str::limit($complaint->complaint_details, 60) }}
+                                        </span>
+
+                                        @if (strlen($complaint->complaint_details) > 60)
+                                            <span class="comment-full d-none">
+                                                {{ $complaint->complaint_details }}
+                                            </span>
+
+                                            <a href="javascript:void(0)" class="read-more text-primary fw-semibold"
+                                                onclick="toggleComment(this)">
+                                                Read more
+                                            </a>
+                                        @endif
+                                    </td>
                                     <td>
                                         @php
                                             // Handle both array or JSON string
@@ -217,6 +238,25 @@
                 selectElement.classList.add('border', 'border-danger', 'text-danger');
             } else if (selectElement.value === 'complete') {
                 selectElement.classList.add('border', 'border-success', 'text-success');
+            }
+        }
+    </script>
+
+    {{-- Read More Button --}}
+    <script>
+        function toggleComment(el) {
+            let td = el.closest('td');
+            let shortText = td.querySelector('.comment-short');
+            let fullText = td.querySelector('.comment-full');
+
+            if (fullText.classList.contains('d-none')) {
+                shortText.classList.add('d-none');
+                fullText.classList.remove('d-none');
+                el.innerText = 'Read less';
+            } else {
+                fullText.classList.add('d-none');
+                shortText.classList.remove('d-none');
+                el.innerText = 'Read more';
             }
         }
     </script>
