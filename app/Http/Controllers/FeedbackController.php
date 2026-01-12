@@ -182,6 +182,10 @@ class FeedbackController extends Controller
         Session::forget(['otp', 'mobile', 'is_verified']);
         $typeText = $request->has('complaint_type') ? 'Complaint' : 'Feedback';
 
-        return back()->with('success', "Thank you {$request->name}! Your {$typeText} has been successfully submitted. Reference ID: <strong>{$uniqueId}</strong>");
+        // return back()->with('success', "Thank you {$request->name}! Your {$typeText} has been successfully submitted. Reference ID: <strong>{$uniqueId}</strong>");
+        return back()->with(
+            'success',
+            "Thank you {$request->name}! Your {$typeText} has been successfully submitted.<br>Reference ID: <strong>{$uniqueId}</strong><br><br><strong>Contact Numbers:</strong><br><strong>Civil:</strong> <a href='tel:9717631201'>9717631201</a><br><strong>Electrical:</strong> <a href='tel:9717631307'>9717631307</a><br><strong>Telecom:</strong> <a href='tel:9717631800'>9717631800</a><br><strong>Reception :</strong> <a href='tel:9319625776'>9319625776</a>"
+        );
     }
 }

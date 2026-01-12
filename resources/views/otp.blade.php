@@ -60,7 +60,7 @@
             </form>
 
             <!-- Section shown only AFTER OTP verify -->
-            @if (session('otp_verify_success'))
+            {{-- @if (session('otp_verify_success')) --}}
                 <div id="post-otp-section">
 
                     <!-- Radio buttons -->
@@ -269,7 +269,7 @@
                     </div>
 
                 </div>
-            @endif
+            {{-- @endif --}}
 
             @if (session('track_status'))
                 <div class="alert {{ session('track_alert_class') }} mt-3">
