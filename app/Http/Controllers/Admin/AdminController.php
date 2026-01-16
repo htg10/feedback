@@ -81,7 +81,7 @@ class AdminController extends Controller
 
     public function feedbacks(Request $request)
     {
-        $listType = $request->get('list_type', 'main');
+        $listType = $request->get('list_type', 'effective');
         $query = Feedback::where('type', 'feedback')->where('list_type', $listType);
 
         // Filter by month only
