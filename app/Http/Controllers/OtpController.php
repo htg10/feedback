@@ -39,7 +39,11 @@ class OtpController extends Controller
             ->with('departments')
             ->get();
 
-        return view('otp', compact('rooms', 'users', 'building'));
+        $departments = Department::where('building_id', $building->id)
+            ->with('users')
+            ->get();
+
+        return view('otp', compact('rooms', 'users', 'building', 'departments'));
     }
 
     public function trackComplaint(Request $request)
@@ -89,13 +93,13 @@ class OtpController extends Controller
 
         $mobile = $request->mobile;
         //Check mobile exists in mobiles table
-        $exists = Mobile::where('mobile', $mobile)->exists();
-        if (!$exists) {
-            return back()->with(
-                'otp_sent_error',
-                'CUG number not registered. OTP not sent. Contact Reception for manual feedback.'
-            );
-        }
+        // $exists = Mobile::where('mobile', $mobile)->exists();
+        // if (!$exists) {
+        //     return back()->with(
+        //         'otp_sent_error',
+        //         'CUG number not registered. OTP not sent. Contact Reception for manual feedback.'
+        //     );
+        // }
 
         // Generate random 6-digit OTP
         $otp = rand(100000, 999999);

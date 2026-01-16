@@ -29,51 +29,60 @@
                 <!-- Total Users -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card card-users shadow-lg text-white border-0">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <p class="fw-semibold fs-6 mb-1">Total Complaints</p>
-                                    <h3 class="mb-0 fw-bold">{{ $usercomplaints }}</h3>
-                                </div>
-                                <div class="card-icon display-6">
-                                    <i class="bx bx-user" style="color: navy"></i>
+                        <a href="{{ route('user.complaints') }}" class="text-decoration-none text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="fw-semibold fs-6 mb-1">Total Complaints</p>
+                                        <h3 class="mb-0 fw-bold">{{ $usercomplaints }}</h3>
+                                    </div>
+                                    <div class="card-icon display-6">
+                                        <i class="bx bx-user" style="color: navy"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
                 <!-- Total Buildings -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card card-businesses shadow-lg text-white border-0">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <p class="fw-semibold fs-6 mb-1">Pending Complaints</p>
-                                    <h3 class="mb-0 fw-bold">{{ $pendingcomplaints }}</h3>
-                                </div>
-                                <div class="card-icon display-6">
-                                    <i class="bx bx-building-house" style="color: navy"></i>
+                        <a href="{{ route('user.complaints', ['status' => 'pending']) }}"
+                            class="text-decoration-none text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="fw-semibold fs-6 mb-1">Pending Complaints</p>
+                                        <h3 class="mb-0 fw-bold">{{ $pendingcomplaints }}</h3>
+                                    </div>
+                                    <div class="card-icon display-6">
+                                        <i class="bx bx-building-house" style="color: navy"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
+
                 </div>
 
                 <!-- Total Floors -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card card-reviews shadow-lg text-white border-0">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <p class="fw-semibold fs-6 mb-1">Resolved Complaints</p>
-                                    <h3 class="mb-0 fw-bold">{{ $resolvedcomplaints }}</h3>
-                                </div>
-                                <div class="card-icon display-6">
-                                    <i class="bx bx-layer" style="color: navy"></i>
+                        <a href="{{ route('user.complaints', ['status' => 'complete']) }}"
+                            class="text-decoration-none text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="fw-semibold fs-6 mb-1">Resolved Complaints</p>
+                                        <h3 class="mb-0 fw-bold">{{ $resolvedcomplaints }}</h3>
+                                    </div>
+                                    <div class="card-icon display-6">
+                                        <i class="bx bx-layer" style="color: navy"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
 

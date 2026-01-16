@@ -9,26 +9,43 @@ use Auth;
 
 class UserController extends Controller
 {
-    public function complaints()
+
+    public function complaints(Request $request)
     {
-        $complaints = Feedback::where('type', 'complaint')
-            ->where('complaint_type', Auth::id())
+        $query = Feedback::where('type', 'complaint')
+            ->where('complaint_type', Auth::id());
+
+        // ✅ STATUS FILTER (MAIN LOGIC)
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $complaints = $query
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('user.complaint.index', compact('complaints'));
     }
+    // public function complaints()
+    // {
+    //     $complaints = Feedback::where('type', 'complaint')
+    //         ->where('complaint_type', Auth::id())
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
 
-    public function complaintHistory()
-    {
-        $complaints = Feedback::where('type', 'complaint')
-            ->where('complaint_type', Auth::id())
-            ->where('status', 'complete')
-            ->orderBy('created_at', 'desc')
-            ->get();
+    //     return view('user.complaint.index', compact('complaints'));
+    // }
 
-        return view('user.complaint.history', compact('complaints'));
-    }
+    // public function complaintPending()
+    // {
+    //     $complaints = Feedback::where('type', 'complaint')
+    //         ->where('complaint_type', Auth::id())
+    //         ->where('status', 'pending')
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     return view('user.complaint.history', compact('complaints'));
+    // }
 
     public function statusToggle(Request $request, $id)
     {

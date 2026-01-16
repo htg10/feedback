@@ -83,21 +83,7 @@
                                                 class="form-control form-control-sm" placeholder="Enter remark"
                                                 onchange="this.form.submit()">
                                         </form>
-                                        {{-- <form method="POST" action="{{ route('user.statusToggle', $complaint->id) }}">
-                                            @csrf
-                                            <select name="status" onchange="updateSelectStyle(this); this.form.submit()"
-                                                class="form-select {{ $complaint->status == 'pending' ? 'border border-danger text-danger' : '' }}
-                                                {{ $complaint->status == 'complete' ? 'border border-success text-success' : '' }}">
-                                                <option value="pending" class="text-danger"
-                                                    {{ $complaint->status == 'pending' ? 'selected' : '' }}>
-                                                    Pending
-                                                </option>
-                                                <option value="complete" class="text-success"
-                                                    {{ $complaint->status == 'complete' ? 'selected' : '' }}>
-                                                    Complete
-                                                </option>
-                                            </select>
-                                        </form> --}}
+
                                     </td>
                                     <td>{{ $complaint->created_at->format('d M Y') }}</td>
                                 </tr>

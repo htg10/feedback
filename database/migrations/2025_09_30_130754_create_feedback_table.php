@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('otp')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->enum('type', ['feedback', 'complaint']);
+            $table->enum('list_type', ['main', 'jay', 'others'])->default('main');
             // Feedback fields
             $table->json('feedback_data')->nullable();
             $table->string('rating')->nullable();

@@ -90,157 +90,203 @@
                 </div>
             @endif
 
-            <!-- Export Buttons -->
-            <div class="d-flex justify-content-end mb-3 gap-2">
-                <a href="{{ route('admin.feedbacks.export', request()->query()) }}" class="btn btn-success">
-                    <i class="bi bi-file-earmark-excel"></i> Export Excel
-                </a>
+            <form method="POST" action="{{ route('admin.feedbacks.move') }}" id="moveForm">
+                @csrf
 
-                <a href="{{ route('admin.feedbacks.export.pdf', request()->query()) }}" class="btn btn-danger">
-                    <i class="bi bi-file-earmark-pdf"></i> Export PDF
-                </a>
-            </div>
-            <div class="card shadow-sm">
-                <div class="card-body table-responsive">
-                    <table id="feedbackTable" class="table table-bordered table-striped align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Unique Id</th>
-                                <th>Name</th>
-                                <th>Mobile No.</th>
-                                <th>Room</th>
-                                <th>Rating Average</th>
-                                <th>Comment</th>
-                                <th>Image</th>
-                                <th>Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $allModals = ''; @endphp
+                <input type="hidden" name="move_to" id="moveTo">
 
-                            @forelse ($feedbacks as $index => $feedback)
+
+                <!-- Export Buttons -->
+                <div class="d-flex justify-content-end mb-3 gap-2">
+                    <div id="moveActions" class="d-none">
+                        {{-- IF CURRENT LIST = MAIN --}}
+                        {{-- @if ($listType === 'main')
+                            <button type="button" class="btn btn-info" onclick="moveFeedbacks('effective')">
+                                Move to Effective
+                            </button>
+
+                            <button type="button" class="btn btn-warning" onclick="moveFeedbacks('exclude')">
+                                Move to Exclude
+                            </button>
+                        @endif --}}
+
+                        {{-- IF CURRENT LIST = effective --}}
+                        @if ($listType === 'effective')
+                            {{-- <button type="button" class="btn btn-primary" onclick="moveFeedbacks('main')">
+                                Move to Main
+                            </button> --}}
+
+                            <button type="button" class="btn btn-warning" onclick="moveFeedbacks('exclude')">
+                                Move to Exclude
+                            </button>
+                        @endif
+                        {{-- IF CURRENT LIST = exclude --}}
+                        @if ($listType === 'exclude')
+                            {{-- <button type="button" class="btn btn-primary" onclick="moveFeedbacks('main')">
+                                Move to Main
+                            </button> --}}
+
+                            <button type="button" class="btn btn-info" onclick="moveFeedbacks('effective')">
+                                Move to Effective
+                            </button>
+                        @endif
+                    </div>
+
+                    <a href="{{ route('admin.feedbacks.export', array_merge(request()->query(), ['list_type' => request('list_type', 'main')])) }}"
+                        class="btn btn-success">
+                        <i class="bi bi-file-earmark-excel"></i> Export Excel
+                    </a>
+
+                    <a href="{{ route('admin.feedbacks.export.pdf', array_merge(request()->query(), ['list_type' => request('list_type', 'main')])) }}"
+                        class="btn btn-danger">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    </a>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body table-responsive">
+                        <table id="feedbackTable" class="table table-bordered table-striped align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <td>{{ $feedback->unique_id }}</td>
-                                    <td>{{ $feedback->name }}</td>
-                                    <td>{{ $feedback->mobile }}</td>
-                                    <td>
-                                        <strong>Room: {{ $feedback->rooms->name ?? '-' }}</strong>
-                                        [{{ $feedback->rooms->floors->name ?? '-' }}]
-                                        [{{ $feedback->rooms->buildings->name ?? '-' }}]
-                                    </td>
-
-                                    @php
-                                        $ratingModel = [
-                                            'food_quality' => 10,
-                                            'hygiene_services' => 10,
-                                            'ambience' => 5,
-                                            'suit_condition' => 10,
-                                            'bathroom_utilities' => 10,
-                                            'housekeeping_service' => 10,
-                                            'surroundings_cleanliness' => 10,
-                                            'common_area_cleanliness' => 10,
-                                            'dustbin_condition' => 10,
-                                            'frequency_availability' => 5,
-                                            'responsiveness' => 10,
-                                        ];
-
-                                        $rating = $feedback->rating;
-                                        $label = $feedback->rating_label ?? '-';
-
-                                        if ($rating >= 85) {
-                                            $badgeClass = 'bg-success';
-                                        } elseif ($rating >= 70) {
-                                            $badgeClass = 'bg-primary';
-                                        } elseif ($rating >= 50) {
-                                            $badgeClass = 'bg-warning text-dark';
-                                        } else {
-                                            $badgeClass = 'bg-danger';
-                                        }
-                                    @endphp
-
-                                    <td>
-                                        <span class="badge {{ $badgeClass }}"
-                                            style="font-size: 14px; padding: 5px; cursor: pointer;" data-bs-toggle="modal"
-                                            data-bs-target="#ratingModal{{ $feedback->id }}">
-                                            {{ number_format($rating, 2) }}%
-                                        </span>
-                                        <strong class="text-muted">({{ $label }})</strong>
-                                    </td>
-
-                                    <td>{{ $feedback->comments ?? '-' }}</td>
-                                    <td>
-                                        @php
-                                            $docs = is_array($feedback->document)
-                                                ? $feedback->document
-                                                : json_decode($feedback->document, true) ?? [];
-                                        @endphp
-
-                                        @if (!empty($docs))
-                                            <a href="{{ route('admin.feedbacks.download', $feedback->id) }}"
-                                                class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-download"></i> Download
-                                            </a>
-                                        @else
-                                            <span class="text-muted">No Image</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $feedback->created_at->format('d-m-Y H:i') }}</td>
+                                    <th>
+                                        <input type="checkbox" id="selectAll">
+                                    </th>
+                                    <th>Unique Id</th>
+                                    <th>Name</th>
+                                    <th>Mobile No.</th>
+                                    <th>Room</th>
+                                    <th>Rating Average</th>
+                                    <th>Comment</th>
+                                    <th>Image</th>
+                                    <th>Created At</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                @php $allModals = ''; @endphp
 
-                                {{-- Collect modals to render after table --}}
-                                @php
-                                    ob_start();
-                                @endphp
-                                <div class="modal fade" id="ratingModal{{ $feedback->id }}" tabindex="-1"
-                                    aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-scrollable">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Feedback Ratings ({{ $feedback->name }})</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                @php
-                                                    $feedbackData = is_array($feedback->feedback_data)
-                                                        ? $feedback->feedback_data
-                                                        : json_decode($feedback->feedback_data, true) ?? [];
-                                                @endphp
-                                                <ul class="list-group">
-                                                    @foreach ($ratingModel as $key => $max)
-                                                        <li
-                                                            class="list-group-item d-flex justify-content-between align-items-center">
-                                                            <span
-                                                                class="text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
-                                                            {{-- <span>{{ $feedbackData[$key] ?? 'N/A' }} /3</span> --}}
-                                                            {{ array_key_exists($key, $feedbackData) && $feedbackData[$key] !== null
-                                                                ? $feedbackData[$key] . ' / 3'
-                                                                : 'NULL' }}
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @php
-                                    $allModals .= ob_get_clean();
-                                @endphp
-                            @empty
-                                {{-- <tr>
-                                    <td colspan="8" class="text-center text-muted">No feedback found.</td>
-                                </tr> --}}
-                            @endforelse
-                        </tbody>
-                    </table>
+                                @forelse ($feedbacks as $index => $feedback)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="feedback-checkbox" name="feedback_ids[]"
+                                                value="{{ $feedback->id }}">
+                                        </td>
+            </form>
+            <td>{{ $feedback->unique_id }}</td>
+            <td>{{ $feedback->name }}</td>
+            <td>{{ $feedback->mobile }}</td>
+            <td>
+                <strong>Room: {{ $feedback->rooms->name ?? '-' }}</strong>
+                [{{ $feedback->rooms->floors->name ?? '-' }}]
+                [{{ $feedback->rooms->buildings->name ?? '-' }}]
+            </td>
+
+            @php
+                $ratingModel = [
+                    'food_quality' => 10,
+                    'hygiene_services' => 10,
+                    'ambience' => 5,
+                    'suit_condition' => 10,
+                    'bathroom_utilities' => 10,
+                    'housekeeping_service' => 10,
+                    'surroundings_cleanliness' => 10,
+                    'common_area_cleanliness' => 10,
+                    'dustbin_condition' => 10,
+                    'frequency_availability' => 5,
+                    'responsiveness' => 10,
+                ];
+
+                $rating = $feedback->rating;
+                $label = $feedback->rating_label ?? '-';
+
+                if ($rating >= 85) {
+                    $badgeClass = 'bg-success';
+                } elseif ($rating >= 70) {
+                    $badgeClass = 'bg-primary';
+                } elseif ($rating >= 50) {
+                    $badgeClass = 'bg-warning text-dark';
+                } else {
+                    $badgeClass = 'bg-danger';
+                }
+            @endphp
+
+            <td>
+                <span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px; cursor: pointer;"
+                    data-bs-toggle="modal" data-bs-target="#ratingModal{{ $feedback->id }}">
+                    {{ number_format($rating, 2) }}%
+                </span>
+                <strong class="text-muted">({{ $label }})</strong>
+            </td>
+
+            <td>{{ $feedback->comments ?? '-' }}</td>
+            <td>
+                @php
+                    $docs = is_array($feedback->document)
+                        ? $feedback->document
+                        : json_decode($feedback->document, true) ?? [];
+                @endphp
+
+                @if (!empty($docs))
+                    <a href="{{ route('admin.feedbacks.download', $feedback->id) }}"
+                        class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                @else
+                    <span class="text-muted">No Image</span>
+                @endif
+            </td>
+            <td>{{ $feedback->created_at->format('d-m-Y H:i') }}</td>
+            </tr>
+
+            {{-- Collect modals to render after table --}}
+            @php
+                ob_start();
+            @endphp
+            <div class="modal fade" id="ratingModal{{ $feedback->id }}" tabindex="-1"
+                aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Feedback Ratings ({{ $feedback->name }})</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @php
+                                $feedbackData = is_array($feedback->feedback_data)
+                                    ? $feedback->feedback_data
+                                    : json_decode($feedback->feedback_data, true) ?? [];
+                            @endphp
+                            <ul class="list-group">
+                                @foreach ($ratingModel as $key => $max)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
+                                        {{-- <span>{{ $feedbackData[$key] ?? 'N/A' }} /3</span> --}}
+                                        {{ array_key_exists($key, $feedbackData) && $feedbackData[$key] !== null
+                                            ? $feedbackData[$key] . ' / 3'
+                                            : 'NULL' }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            {{-- Render all modals outside the table --}}
-            {!! $allModals !!}
-
-
+            @php
+                $allModals .= ob_get_clean();
+            @endphp
+        @empty
+            {{-- <tr>
+                                    <td colspan="8" class="text-center text-muted">No feedback found.</td>
+                                </tr> --}}
+            @endforelse
+            </tbody>
+            </table>
         </div>
+    </div>
+
+    {{-- Render all modals outside the table --}}
+    {!! $allModals !!}
+
+
+    </div>
     </div>
 @endsection
 @section('script')
@@ -285,5 +331,36 @@
         $(document).ready(function() {
             $('#feedbackTable').DataTable();
         });
+    </script>
+
+    {{-- Move feedbacks --}}
+    <script>
+        function moveFeedbacks(type) {
+            let checked = document.querySelectorAll('.feedback-checkbox:checked');
+
+            if (checked.length === 0) {
+                alert('Please select at least one feedbacks');
+                return;
+            }
+
+            document.getElementById('moveTo').value = type;
+            document.getElementById('moveForm').submit();
+        }
+
+        document.getElementById('selectAll').addEventListener('change', function() {
+            document.querySelectorAll('.feedback-checkbox')
+                .forEach(cb => cb.checked = this.checked);
+
+            toggleMoveBox();
+        });
+
+        document.querySelectorAll('.feedback-checkbox')
+            .forEach(cb => cb.addEventListener('change', toggleMoveBox));
+
+        function toggleMoveBox() {
+            let anyChecked = document.querySelectorAll('.feedback-checkbox:checked').length > 0;
+            document.getElementById('moveActions')
+                .classList.toggle('d-none', !anyChecked);
+        }
     </script>
 @endsection

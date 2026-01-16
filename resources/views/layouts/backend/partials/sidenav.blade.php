@@ -51,14 +51,6 @@
                         </a>
                     </li>
 
-                    {{-- <!-- Departments -->
-                    <li class="mt-2">
-                        <a href="/admin/categories" class="waves-effect d-flex align-items-center">
-                            <i class="bx bx-category me-2 fs-5"></i>
-                            <span>Categories</span>
-                        </a>
-                    </li> --}}
-
                     <!-- Rooms -->
                     <li class="mt-2">
                         <a href="/admin/rooms" class="waves-effect d-flex align-items-center">
@@ -69,13 +61,33 @@
 
                     <li class="menu-title text-muted">Overview</li>
 
-                    <!-- All Feedbacks -->
+                    <!-- Feedbacks Dropdown -->
                     <li class="mt-2">
-                        <a href="/admin/feedbacks" class="waves-effect d-flex align-items-center">
+                        <a href="javascript:void(0);" class="waves-effect d-flex align-items-center"
+                            style="background-color:rgb(127, 49, 204); color: white;">
+
                             <i class="bx bx-message-detail me-2 fs-5"></i>
-                            <span>All Feedbacks</span>
+                            <span>Feedbacks</span>
+                            <i class="bx bx-chevron-down ms-auto"></i>
                         </a>
+
+                        <!-- Sub Menu -->
+                        <ul class="list-unstyled ps-4">
+                            <li class="mt-2">
+                                <a href="{{ route('admin.feedbacks', ['list_type' => 'effective']) }}"
+                                    class="waves-effect">
+                                    Effective Feedbacks
+                                </a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="{{ route('admin.feedbacks', ['list_type' => 'exclude']) }}"
+                                    class="waves-effect">
+                                    Exclude Feedbacks
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+
 
                     <!-- All Complaints -->
                     <li class="mt-2">
@@ -87,15 +99,23 @@
                 @else
                     <!-- User-only links -->
                     <li class="mt-2">
-                        <a href="/complaint/complaints" class="waves-effect">
-                            <i class="bx bx-error me-2 fs-5"></i>
-                            <span key="t-chat">Complaints</span>
+                        <a href="{{ route('user.complaints', ['status' => 'pending']) }}"
+                            class="btn btn-outline-warning {{ request('status') == 'pending' ? 'active' : '' }}">
+                            Pending
                         </a>
                     </li>
+
                     <li class="mt-2">
-                        <a href="/complaint/history" class="waves-effect">
-                            <i class="bx bx-history me-2 fs-5"></i>
-                            <span key="t-chat">Complaint History</span>
+                        <a href="{{ route('user.complaints', ['status' => 'complete']) }}"
+                            class="btn btn-outline-success {{ request('status') == 'complete' ? 'active' : '' }}">
+                            Resolved
+                        </a>
+                    </li>
+
+                    <li class="mt-2">
+                        <a href="{{ route('user.complaints') }}"
+                            class="btn btn-outline-primary {{ request('status') == null ? 'active' : '' }}">
+                            All
                         </a>
                     </li>
                 @endif

@@ -1,52 +1,143 @@
-@php
-    $ratingModel = [
-        'food_quality' => 10,
-        'hygiene_services' => 10,
-        'ambience' => 5,
-        'suit_condition' => 10,
-        'bathroom_utilities' => 10,
-        'housekeeping_service' => 10,
-        'surroundings_cleanliness' => 10,
-        'common_area_cleanliness' => 10,
-        'dustbin_condition' => 10,
-        'frequency_availability' => 5,
-        'responsiveness' => 10,
-    ];
-@endphp
+public function up(): void
+{
+    Schema::table('feedback', function (Blueprint $table) {
+        $table->enum('list_type', ['main', 'jay', 'others'])
+              ->default('main')
+              ->after('type');
+    });
+}
 
+public function down(): void
+{
+    Schema::table('feedback', function (Blueprint $table) {
+        $table->dropColumn('list_type');
+    });
+}
 
-<span class="badge {{ $badgeClass }}" style="font-size: 14px; padding: 5px;" data-bs-toggle="modal"
-    data-bs-target="#ratingModal{{ $feedback->id }}">
-    {{ number_format($rating, 2) }}%
-</span>
-<strong class="text-muted">({{ $label }})</strong>
+{{-- ============================================================== --}}
+public function complaints(Request $request)
+{
+    $listType = $request->get('list_type', 'main');
 
+    $query = Feedback::where('type', 'complaint')
+        ->where('list_type', $listType);
 
-@php
-    $data = json_decode($feedback->feedback_data, true) ?? [];
-@endphp
+    if ($request->filled('from_date') && $request->filled('to_date')) {
+        $query->whereBetween('created_at', [
+            $request->from_date . ' 00:00:00',
+            $request->to_date . ' 23:59:59'
+        ]);
+    }
 
-<!-- Rating Modal -->
-<div class="modal fade" id="ratingModal{{ $feedback->id }}" tabindex="-1"
-    aria-labelledby="ratingModalLabel{{ $feedback->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Feedback Ratings ({{ $feedback->name }})</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <ul class="list-group">
-                    @foreach ($ratingModel as $key => $max)
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
-                            <span>
-                                {{ $data[$key] ?? 'N/A' }} / {{ $max }}
-                            </span>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    if ($request->filled('department_id')) {
+        $query->whereHas('user.departments', fn ($q) =>
+            $q->where('id', $request->department_id)
+        );
+    }
+
+    if ($request->filled('building_id')) {
+        $query->whereHas('rooms.buildings', fn ($q) =>
+            $q->where('id', $request->building_id)
+        );
+    }
+
+    $complaints = $query->with([
+        'rooms.floors',
+        'rooms.buildings',
+        'user.departments'
+    ])->latest()->get();
+
+    $departments = Department::orderBy('name')->get();
+    $buildings   = Building::orderBy('name')->get();
+
+    return view('admin.complaint.index', compact(
+        'complaints',
+        'departments',
+        'buildings',
+        'listType'
+    ));
+}
+
+{{-- ========================================================================== --}}
+<a href="{{ route('complaints',['list_type'=>'main']) }}">All Complaints</a>
+<a href="{{ route('complaints',['list_type'=>'jay']) }}">Jay Complaints</a>
+<a href="{{ route('complaints',['list_type'=>'others']) }}">Other Complaints</a>
+
+<th>
+    <input type="checkbox" id="selectAll">
+</th>
+<th>Unique Id</th>
+
+<td>
+    <input type="checkbox"
+           class="complaint-checkbox"
+           name="complaint_ids[]"
+           value="{{ $complaint->id }}">
+</td>
+<td>{{ $complaint->unique_id }}</td>
+
+{{-- ====================================================================== --}}
+<form method="POST" action="{{ route('complaints.move') }}" id="moveForm">
+    @csrf
+
+    <input type="hidden" name="move_to" id="moveTo">
+
+    <div id="moveActions" class="d-none">
+        <button type="button" class="btn btn-info"
+                onclick="moveComplaints('jay')">
+            Move to Jay
+        </button>
+
+        <button type="button" class="btn btn-warning"
+                onclick="moveComplaints('others')">
+            Move to Others
+        </button>
     </div>
-</div>
+</form>
+
+{{-- ========================= --}}
+<script>
+const checkboxes = document.querySelectorAll('.complaint-checkbox');
+const moveBox = document.getElementById('moveActions');
+
+checkboxes.forEach(cb => {
+    cb.addEventListener('change', toggleMoveBox);
+});
+
+document.getElementById('selectAll').addEventListener('change', function () {
+    checkboxes.forEach(cb => cb.checked = this.checked);
+    toggleMoveBox();
+});
+
+function toggleMoveBox() {
+    let checked = document.querySelectorAll('.complaint-checkbox:checked');
+    moveBox.classList.toggle('d-none', checked.length === 0);
+}
+
+function moveComplaints(type) {
+    document.getElementById('moveTo').value = type;
+    document.getElementById('moveForm').submit();
+}
+</script>
+{{-- ===================================================================================== --}}
+public function moveComplaints(Request $request)
+{
+    $request->validate([
+        'complaint_ids' => 'required|array',
+        'move_to' => 'required|in:jay,others'
+    ]);
+
+    Feedback::whereIn('id', $request->complaint_ids)
+        ->update(['list_type' => $request->move_to]);
+
+    return back()->with('success', 'Complaints moved successfully');
+}
+{{-- ======================================== --}}
+Route::post('/admin/complaints/move',
+    [AdminController::class, 'moveComplaints']
+)->name('complaints.move');
+

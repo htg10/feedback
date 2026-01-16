@@ -62,10 +62,27 @@ class AdminController extends Controller
         return $pdf->download('feedback-report-' . now()->format('d-m-Y') . '.pdf');
     }
 
+    public function moveFeedbacks(Request $request)
+    {
+        // DEBUG (temporary)
+        // dd($request->all());
+
+        $request->validate([
+            'feedback_ids' => 'required|array',
+            'move_to' => 'required|in:effective,exclude'
+        ]);
+
+        Feedback::whereIn('id', $request->feedback_ids)
+            ->update(['list_type' => $request->move_to]);
+
+        return back()->with('success', 'Feedbacks moved successfully');
+    }
+
 
     public function feedbacks(Request $request)
     {
-        $query = Feedback::where('type', 'feedback');
+        $listType = $request->get('list_type', 'main');
+        $query = Feedback::where('type', 'feedback')->where('list_type', $listType);
 
         // Filter by month only
         if ($request->filled('month') && !$request->filled('year')) {
@@ -100,7 +117,7 @@ class AdminController extends Controller
 
         // Load related data
         $feedbacks = $query->with(['rooms.floors', 'rooms.buildings'])
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         // $averageRating = $feedbacks->count() > 0 ? $feedbacks->avg('rating') : 0;
@@ -114,7 +131,7 @@ class AdminController extends Controller
 
         $buildings = Building::orderBy('name')->get();
 
-        return view('admin.feedback.index', compact('feedbacks', 'averageRating', 'buildings'));
+        return view('admin.feedback.index', compact('feedbacks', 'averageRating', 'buildings', 'listType'));
     }
 
     public function downloadDocuments($id)
@@ -200,7 +217,7 @@ class AdminController extends Controller
         }
 
         $complaints = $query->with(['rooms.floors', 'rooms.buildings', 'user.departments'])
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         $departments = Department::orderBy('name')->get();

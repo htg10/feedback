@@ -9,6 +9,11 @@ class FeedbackFilterService
     {
         $query = Feedback::where('type', 'feedback');
 
+        $query->where(
+            'list_type',
+            $request->get('list_type', 'main')
+        );
+
         // Month only
         if ($request->filled('month') && !$request->filled('year')) {
             $query->whereMonth('created_at', $request->month);
@@ -43,6 +48,6 @@ class FeedbackFilterService
         return $query->with([
             'rooms.floors',
             'rooms.buildings'
-        ])->orderBy('created_at', 'desc');
+        ])->latest();
     }
 }

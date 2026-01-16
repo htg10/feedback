@@ -16,6 +16,7 @@ class Feedback extends Model
         'otp',
         'is_verified',
         'type',
+        'list_type',
         'feedback_data',
         'rating',
         'rating_label',

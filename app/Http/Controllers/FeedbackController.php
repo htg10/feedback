@@ -156,8 +156,15 @@ class FeedbackController extends Controller
         }
 
         // ✅ SMS will go to selected user
-        $mobile = $complaintUser->mobile;
+        $usermobile = $complaintUser->mobile;
+        $drmmobile = "8193054955";
 
+        // Convert array → comma-separated string with country code
+        $mobiles = implode(',', [
+            '91' . $usermobile,
+            '91' . $drmmobile
+        ]);
+        // dd($mobiles);
         $username = 'helptogether8';
         $password = '63278934';
         $header = 'RLWORH';
@@ -168,13 +175,13 @@ class FeedbackController extends Controller
             'username' => $username,
             'password' => $password,
             'source' => $header,
-            'dmobile' => '91' . $mobile,
+            'dmobile' => $mobiles,
             'dlttempid' => $templateId,
             'message' => $message,
         ]);
 
         \Log::info('OTP SMS Response', [
-            'mobile' => $mobile,
+            'mobile' => $mobiles,
             'response' => $response->body()
         ]);
 

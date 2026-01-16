@@ -324,12 +324,9 @@ header .circular-logo {
 /* Hover effect */
 .sidebar-light .metismenu li a:hover {
     background-color: #417aac;
-    /* Light blue */
-    color: #1AB79D;
 }
 
 .sidebar-light .metismenu li a:hover i {
-    color: #1AB79D;
     background-attachment: #417aac;
 }
 

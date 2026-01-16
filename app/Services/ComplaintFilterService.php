@@ -37,6 +37,6 @@ class ComplaintFilterService
             'rooms.floors',
             'rooms.buildings',
             'user.departments'
-        ])->orderBy('created_at', 'desc');
+        ])->latest();
     }
 }

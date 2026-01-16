@@ -299,6 +299,40 @@
                     </ul>
                 </div>
             @endif
+
+            {{-- <div class="alert alert-success mt-3">
+                <strong>Contact Numbers:</strong><br>
+                <strong>Civil:</strong> <a href='tel:9717631201'>9717631201</a><br>
+                <strong>Electrical:</strong> <a href='tel:9717631307'>9717631307</a><br>
+                <strong>Telecom:</strong> <a href='tel:9717631800'>9717631800</a><br>
+                <strong>Reception :</strong> <a href='tel:9319625776'>9319625776</a>
+            </div> --}}
+            <div class="card shadow-sm mt-3 border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-success mb-3">
+                        <i class="bi bi-telephone-fill me-2"></i>Contact Numbers
+                    </h5>
+
+                    <ul class="list-group list-group-flush">
+                        @forelse($departments as $department)
+                            @foreach ($department->users as $user)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i
+                                            class="bi bi-building me-2 text-primary"></i><strong>{{ $department->name }}</strong></span>
+                                    <a href="tel:{{ $user->mobile }}"
+                                        class="text-decoration-none fw-semibold">{{ $user->mobile }}</a>
+                                </li>
+                            @endforeach
+                        @empty
+                            <li class="list-group-item text-muted text-center">
+                                No contact numbers available for this building
+                            </li>
+                        @endforelse
+
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 
