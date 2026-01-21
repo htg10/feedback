@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\FloorController;
+use App\Http\Controllers\Admin\ReceptionController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\ToiletController;
 use App\Http\Controllers\Admin\UserController;
@@ -130,6 +131,20 @@ Route::group(['middleware' => ['auth', 'role:2'], 'as' => 'user.'], function () 
     Route::post('/complaint/statusToggle/{id}', [UserController::class, 'statusToggle'])->name('statusToggle');
     Route::post('/complaint/statusToggle1/{id}', [UserController::class, 'statusToggle1'])->name('statusToggle1');
     Route::post('/complaint/remark/{id}', [UserController::class, 'updateUserRemark'])->name('complaint.remark');
+
+});
+
+
+// User Routes
+Route::group(['middleware' => ['auth', 'role:3'], 'as' => 'reception.'], function () {
+
+    Route::get('/reception/index', [BackendIndexController::class, 'index'])->name('dashboard');
+
+    // Complaint
+    Route::get('/reception/complaints', [ReceptionController::class, 'complaints'])->name('complaints');
+    // Complaint
+
+    Route::get('/reception/feedbacks', [ReceptionController::class, 'feedbacks'])->name('feedbacks');
 
 });
 

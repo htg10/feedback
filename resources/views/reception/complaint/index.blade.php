@@ -1,7 +1,13 @@
 @extends('layouts.backend.app')
 
 @section('meta')
-    <title>Complaints History | User</title>
+    <title>Complaints List | Admin</title>
+@endsection
+
+@section('style')
+    <style>
+
+    </style>
 @endsection
 
 @section('content')
@@ -12,8 +18,56 @@
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <h4 class="text-primary">
-                        <i class="fas fa-building"></i> Complaints History
+                        <i class="fas fa-building"></i> Complaints List
                     </h4>
+                </div>
+            </div>
+
+            <!-- Filter Form -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('reception.complaints') }}" class="row g-3 align-items-end">
+
+                        <div class="col-md-2">
+                            <label class="form-label">From Date</label>
+                            <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">To Date</label>
+                            <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Department</label>
+                            <select name="department_id" class="form-select">
+                                <option value="">-- All --</option>
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department->id }}"
+                                        {{ request('department_id') == $department->id ? 'selected' : '' }}>
+                                        {{ $department->name }} | {{ $department->building->name ?? null }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="">-- All --</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending
+                                </option>
+                                <option value="complete" {{ request('status') == 'complete' ? 'selected' : '' }}>Complete
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">Filter</button>
+                            <a href="{{ route('reception.complaints') }}" class="btn btn-secondary w-100">Reset</a>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -23,12 +77,12 @@
                     <table class="table table-bordered table-striped align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>#</th>
+                                <th>Unique Id</th>
                                 <th>Name</th>
                                 <th>Mobile No.</th>
                                 <th>Room</th>
+                                <th>Department</th>
                                 <th>Comment</th>
-                                <th>Download</th>
                                 <th>Remark</th>
                                 <th>Created At</th>
                             </tr>
@@ -36,12 +90,13 @@
                         <tbody>
                             @forelse ($complaints as $index => $complaint)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $complaint->unique_id }}</td>
                                     <td>{{ $complaint->name }}</td>
                                     <td>{{ $complaint->mobile }}</td>
-                                    <td>{{ $complaint->rooms->name ?? '-' }}
-                                        [{{ $complaint->rooms->floors->name }}][{{ $complaint->rooms->buildings->name }}]
+                                    <td><strong>Room: {{ $complaint->rooms->name ?? '-' }}</strong>
+                                        [{{ $complaint->rooms->floors->name ?? '-' }}][{{ $complaint->rooms->buildings->name ?? '-' }}]
                                     </td>
+                                    <td>{{ $complaint->user->departments->name ?? '-' }}</td>
                                     <td>
                                         <span class="comment-short">
                                             {{ Str::limit($complaint->complaint_details, 60) }}
@@ -58,31 +113,7 @@
                                             </a>
                                         @endif
                                     </td>
-                                    <td>
-                                        @php
-                                            // Handle both array or JSON string
-                                            $docs = is_array($complaint->document)
-                                                ? $complaint->document
-                                                : json_decode($complaint->document, true) ?? [];
-                                        @endphp
-
-                                        @if (!empty($docs))
-                                            <a href="{{ route('user.complaints.download', $complaint->id) }}"
-                                                class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-download"></i> Download
-                                            </a>
-                                        @else
-                                            <span class="text-muted">No Image</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <form method="POST" action="{{ route('user.complaint.remark', $complaint->id) }}">
-                                            @csrf
-                                            <input type="text" name="user_remark" value="{{ $complaint->user_remark }}"
-                                                class="form-control form-control-sm" placeholder="Enter remark"
-                                                onchange="this.form.submit()">
-                                        </form>
-                                    </td>
+                                    <td>{{ $complaint->user_remark }}</td>
                                     <td>{{ $complaint->created_at->format('d M Y') }}</td>
                                 </tr>
                             @empty
@@ -137,6 +168,7 @@
             }
         });
     </script>
+
     <script>
         function updateSelectStyle(selectElement) {
             // Remove old status classes

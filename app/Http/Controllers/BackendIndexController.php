@@ -16,7 +16,8 @@ class BackendIndexController extends Controller
 {
     public function index()
     {
-        $users = User::where('role_id', 2)->count();
+        // $users = User::where('role_id', 3)->count();
+        $users = User::whereIn('role_id', [2, 3])->count();
         $buildings = Building::all()->count();
         $floors = Floor::all()->count();
         $rooms = Room::all()->count();
@@ -48,6 +49,24 @@ class BackendIndexController extends Controller
             return view('admin.index', compact('users', 'buildings', 'floors', 'rooms', 'complaints', 'feedbacks', 'totalpendingcomplaints', 'totalcompleteomplaints'));
         } elseif (Auth::user()->role_id == 2) {
             return view('user.index', compact('usercomplaints', 'pendingcomplaints', 'resolvedcomplaints'));
+        } elseif (Auth::user()->role_id == 3) {
+            $reception = Auth::user();
+            $buildingId = $reception->departments->building_id;
+
+            $resfeedbacks = Feedback::where('type', 'feedback')
+                ->whereHas('rooms', function ($q) use ($buildingId) {
+                    $q->where('building_id', $buildingId);
+                })
+                ->count();
+
+            $rescomplaints = Feedback::where('type', 'complaint')
+                ->whereHas('rooms', function ($q) use ($buildingId) {
+                    $q->where('building_id', $buildingId);
+                })
+                ->count();
+            // dd($rescomplaints);
+
+            return view('reception.index', compact('resfeedbacks', 'rescomplaints'));
         }
 
         return redirect()->route('login');

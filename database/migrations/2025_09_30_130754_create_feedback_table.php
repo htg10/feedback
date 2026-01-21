@@ -32,6 +32,7 @@ return new class extends Migration {
             $table->text('document')->nullable();
             $table->enum('status', ['pending', 'complete'])->default('pending');
             $table->string('user_remark')->nullable();
+            $table->integer('building_id')->nullable();
             $table->timestamps();
         });
     }

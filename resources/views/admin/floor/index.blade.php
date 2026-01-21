@@ -100,6 +100,7 @@
         if (rowCount > 0 && !isEmpty) {
             $('.table').DataTable({
                 language: {
+                    ordering: false,
                     paginate: {
                         previous: "<i class='fas fa-angle-left'></i>",
                         next: "<i class='fas fa-angle-right'></i>"

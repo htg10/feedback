@@ -7,7 +7,9 @@
                 <li class="menu-title text-muted">Main</li>
 
                 <li>
-                    <a href="{{ url(auth()->user()->role_id == 1 ? '/admin/index' : '/user/index') }}"
+                    <a href="{{ url(
+                        auth()->user()->role_id == 1 ? '/admin/index' : (auth()->user()->role_id == 2 ? '/user/index' : '/reception/index'),
+                    ) }}"
                         class="waves-effect d-flex align-items-center">
                         <i class="bx bx-home-circle me-2 fs-5"></i>
                         <span>Dashboard</span>
@@ -96,7 +98,7 @@
                             <span>All Complaints</span>
                         </a>
                     </li>
-                @else
+                @elseif (auth()->user()->role_id == 2)
                     <!-- User-only links -->
                     <li class="mt-2">
                         <a href="{{ route('user.complaints', ['status' => 'pending']) }}"
@@ -118,6 +120,24 @@
                             All
                         </a>
                     </li>
+                @elseif (auth()->user()->role_id == 3)
+                    <!-- Buildings -->
+                    <li class="mt-2">
+                        <a href="/reception/feedbacks" class="waves-effect d-flex align-items-center">
+                            <i class="bx bx-building-house me-2 fs-5"></i>
+                            <span>Feedbacks</span>
+                        </a>
+                    </li>
+
+                    <!-- Departments -->
+                    <li class="mt-2">
+                        <a href="/reception/complaints" class="waves-effect d-flex align-items-center">
+                            <i class="bx bx-building me-2 fs-5"></i>
+                            <span>Complaints</span>
+                        </a>
+                    </li>
+                @else
+                    <p>No role assigned</p>
                 @endif
 
             </ul>

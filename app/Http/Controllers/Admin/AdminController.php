@@ -29,7 +29,7 @@ class AdminController extends Controller
     {
         $name = $request->input('name');
 
-        $users = User::where('role_id', 2)
+        $users = User::whereIn('role_id', [2, 3])
             ->when($name, function ($query) use ($name) {
                 $query->where('name', 'like', '%' . $name . '%');
             })->paginate(10);
