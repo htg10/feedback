@@ -101,7 +101,6 @@
                                     <td>
                                         <strong>Room: {{ $feedback->rooms->name ?? '-' }}</strong>
                                         [{{ $feedback->rooms->floors->name ?? '-' }}]
-                                        [{{ $feedback->rooms->buildings->name ?? '-' }}]
                                     </td>
 
                                     @php

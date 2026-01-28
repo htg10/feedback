@@ -58,9 +58,15 @@ class ReceptionController extends Controller
         }
         $buildingId = $reception->departments->building_id;
 
+        // department
+        $allowedDepartments = ['Cafeteria', 'Reception', 'Security', 'Electrical'];
+
         $query = Feedback::where('type', 'complaint')
             ->whereHas('rooms', function ($q) use ($buildingId) {
                 $q->where('building_id', $buildingId);
+            })
+            ->whereHas('user.departments', function ($q) use ($allowedDepartments) {
+                $q->whereIn('name', $allowedDepartments);
             });
 
         if ($request->filled('from_date') && $request->filled('to_date')) {
@@ -85,6 +91,7 @@ class ReceptionController extends Controller
             ->get();
 
         $departments = Department::where('building_id', $buildingId)
+            ->whereIn('name', $allowedDepartments)
             ->orderBy('name')
             ->get();
 

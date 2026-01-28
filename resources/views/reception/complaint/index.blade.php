@@ -45,7 +45,7 @@
                                 @foreach ($departments as $department)
                                     <option value="{{ $department->id }}"
                                         {{ request('department_id') == $department->id ? 'selected' : '' }}>
-                                        {{ $department->name }} | {{ $department->building->name ?? null }}
+                                        {{ $department->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -94,7 +94,7 @@
                                     <td>{{ $complaint->name }}</td>
                                     <td>{{ $complaint->mobile }}</td>
                                     <td><strong>Room: {{ $complaint->rooms->name ?? '-' }}</strong>
-                                        [{{ $complaint->rooms->floors->name ?? '-' }}][{{ $complaint->rooms->buildings->name ?? '-' }}]
+                                        [{{ $complaint->rooms->floors->name ?? '-' }}]
                                     </td>
                                     <td>{{ $complaint->user->departments->name ?? '-' }}</td>
                                     <td>
