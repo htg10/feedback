@@ -53,6 +53,8 @@ class BackendIndexController extends Controller
             $reception = Auth::user();
             $buildingId = $reception->departments->building_id;
 
+            $allowedDepartments = ['Cafeteria', 'Reception', 'Security'];
+
             $resfeedbacks = Feedback::where('type', 'feedback')
                 ->whereHas('rooms', function ($q) use ($buildingId) {
                     $q->where('building_id', $buildingId);
@@ -62,6 +64,9 @@ class BackendIndexController extends Controller
             $rescomplaints = Feedback::where('type', 'complaint')
                 ->whereHas('rooms', function ($q) use ($buildingId) {
                     $q->where('building_id', $buildingId);
+                })
+                ->whereHas('user.departments', function ($q) use ($allowedDepartments) {
+                    $q->whereIn('name', $allowedDepartments);
                 })
                 ->count();
             // dd($rescomplaints);

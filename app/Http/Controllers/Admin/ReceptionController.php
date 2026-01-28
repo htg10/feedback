@@ -59,7 +59,7 @@ class ReceptionController extends Controller
         $buildingId = $reception->departments->building_id;
 
         // department
-        $allowedDepartments = ['Cafeteria', 'Reception', 'Security', 'Electrical'];
+        $allowedDepartments = ['Cafeteria', 'Reception', 'Security'];
 
         $query = Feedback::where('type', 'complaint')
             ->whereHas('rooms', function ($q) use ($buildingId) {
